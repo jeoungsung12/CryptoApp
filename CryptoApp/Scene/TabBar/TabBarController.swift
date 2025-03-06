@@ -41,4 +41,8 @@ final class TabBarController: UITabBarController {
         items[2].title = "포트폴리오"
     }
     
+    deinit {
+        print(#function, self)
+    }
+    
 }

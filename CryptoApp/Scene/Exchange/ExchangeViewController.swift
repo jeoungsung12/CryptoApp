@@ -6,13 +6,36 @@
 //
 
 import UIKit
+import SnapKit
+import RxSwift
+import RxCocoa
 
-class ExchangeViewController: UIViewController {
-
+class ExchangeViewController: BaseViewController {
+    
+    private var disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.view.backgroundColor = .white
+    }
+    
+    override func setBinding() {
+        
+    }
+    
+    override func configureView() {
+        
+    }
+    
+    override func configureHierarchy() {
+        
+    }
+    
+    override func configureLayout() {
+        
+    }
+    
+    deinit {
+        print(#function, self)
     }
 
 }
