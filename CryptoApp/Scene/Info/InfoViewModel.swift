@@ -1,5 +1,5 @@
 //
-//  ExchangeViewModel.swift
+//  InfoViewModel.swift
 //  CryptoApp
 //
 //  Created by 정성윤 on 3/6/25.
@@ -9,8 +9,18 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class ExchangeViewModel: BaseViewModel {
-    private let service = UpbitService()
+enum Section {
+    case header
+    case footer
+}
+
+enum Item {
+    case popularSearch
+    case popularNFT
+}
+
+final class InfoViewModel: BaseViewModel {
+    private let service = GeckoService()
     private var disposeBag = DisposeBag()
     
     struct Input {
@@ -18,7 +28,7 @@ final class ExchangeViewModel: BaseViewModel {
     }
     
     struct Output {
-        let coinResult: Driver<[ExchangeEntity]>
+        let popularReslut: Driver<PopularEntity?>
     }
     
     init() {
@@ -28,30 +38,28 @@ final class ExchangeViewModel: BaseViewModel {
     deinit {
         print(#function, self)
     }
-    
 }
 
-extension ExchangeViewModel {
+extension InfoViewModel {
     
     func transform(_ input: Input) -> Output {
-        let coinResult: BehaviorRelay<[ExchangeEntity]> = BehaviorRelay(value: [])
+        let popularResult: BehaviorRelay<PopularEntity?> = BehaviorRelay(value: nil)
         
         input.reloadTrigger
             .withUnretained(self)
             .flatMapLatest { _ in
-                return self.service.getAllCoin()
+                return self.service.getTrending()
                     .catch { error in
-                        return Observable.just([])
+                        return Observable.just(PopularEntity(coins: [], nfts: []))
                     }
             }
-            .bind { value in
-                coinResult.accept(value)
+            .bind(with: self) { onwer, data in
+                popularResult.accept(data)
             }
             .disposed(by: disposeBag)
         
-        
         return Output(
-            coinResult: coinResult.asDriver()
+            popularReslut: popularResult.asDriver()
         )
     }
     

@@ -10,12 +10,8 @@ import RxSwift
 import RxCocoa
 
 final class UpbitService {
-    private let repository: UpbitRepository
+    private let repository: UpbitRepositoryType = UpbitRepository()
     private var disposeBag = DisposeBag()
-    
-    init(repository: UpbitRepository) {
-        self.repository = repository
-    }
     
     func getAllCoin() -> Observable<[ExchangeEntity]> {
         return Observable.create { [weak self] observer in
