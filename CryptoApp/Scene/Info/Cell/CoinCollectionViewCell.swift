@@ -25,18 +25,18 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
     
     override func configureView() {
         rankLabel.font = .largeRegular
-        rankLabel.textColor = .customGray
+        rankLabel.textColor = .customDarkGray
         
         thumbImageView.contentMode = .scaleAspectFill
         thumbImageView.clipsToBounds = true
-        thumbImageView.backgroundColor = .customLightGray
+        thumbImageView.backgroundColor = .customGray
         thumbImageView.layer.cornerRadius = 15
         
-        titleLabel.font = .largeBold
+        titleLabel.font = .boldSystemFont(ofSize: 15)
         titleLabel.textColor = .customDarkGray
         
         subTitleLabel.font = .smallRegular
-        subTitleLabel.textColor = .customLightGray
+        subTitleLabel.textColor = .customGray
         
         arrowImageView.contentMode = .scaleAspectFit
     }
@@ -80,7 +80,8 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
     
     func configure(_ model: PopularCoinEntity,_ items: Int) {
         rankLabel.text = "\(items + 1)"
-        
+        titleLabel.text = model.symbol
+        subTitleLabel.text = model.name
         
         if let url = URL(string: model.image) {
             //TODO: ImageDownSampling
