@@ -30,9 +30,15 @@ final class InfoViewController: BaseViewController {
         let output = viewModel.transform(input)
         input.reloadTrigger.accept(())
         
-        output.popularReslut
-            .drive(with: self) { owner, entity in
-                dump(entity)
+        output.coinResult
+            .drive(coinCollectionView.rx.items(cellIdentifier: CoinCollectionViewCell.id, cellType: CoinCollectionViewCell.self)) { items, element, cell in
+                cell.configure(element, items)
+            }
+            .disposed(by: disposeBag)
+        
+        output.nftsResult
+            .drive(nftsCollectionView.rx.items(cellIdentifier: NftsCollectionViewCell.id, cellType: NftsCollectionViewCell.self)) { items, element, cell in
+                
             }
             .disposed(by: disposeBag)
     }

@@ -21,7 +21,7 @@ struct PopularCoinsDTO: Decodable {
         let name: String
         let symbol: String
         let market_cap_rank: Int
-        let thumb: String
+        let thumb: String?
         let small: String
         let large: String
         let slug: String
@@ -50,7 +50,7 @@ struct PopularCoinsDTO: Decodable {
 
 struct PopularNftsDTO: Decodable {
     let id, name, symbol: String
-    let thumb: String
+    let thumb: String?
     let nftContractID: Int
     let nativeCurrencySymbol: String
     let floorPriceInNativeCurrency, floorPrice24HPercentageChange: Double

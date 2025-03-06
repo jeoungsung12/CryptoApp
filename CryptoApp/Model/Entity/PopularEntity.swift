@@ -15,6 +15,7 @@ struct PopularEntity {
 struct PopularCoinEntity {
     let id: String
     let name: String
+    let image: String
     let symbol: String
     let volumePercent: Double
 }
@@ -23,6 +24,7 @@ struct PopularCoinEntity {
 struct PopularNftsEntity {
     let id: String
     let name: String
+    let image: String
     let volumePercent: String
     let volumePrice: String
 }
@@ -34,6 +36,7 @@ extension GeckoPopularResponseDTO {
              PopularCoinEntity(
                 id: $0.item.id,
                 name: $0.item.name,
+                image: $0.item.thumb ?? "이미지 준비중!",
                 symbol: $0.item.symbol,
                 volumePercent: 0.0
             )
@@ -43,6 +46,7 @@ extension GeckoPopularResponseDTO {
             PopularNftsEntity(
                 id: $0.id,
                 name: $0.name,
+                image: $0.thumb ?? "이미지 준비중!",
                 volumePercent: $0.data.floorPrice,
                 volumePrice: $0.data.floorPriceInUsd24HPercentageChange
             )

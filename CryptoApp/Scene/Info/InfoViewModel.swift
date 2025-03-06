@@ -28,7 +28,8 @@ final class InfoViewModel: BaseViewModel {
     }
     
     struct Output {
-        let popularReslut: Driver<PopularEntity?>
+        let coinResult: Driver<[PopularCoinEntity]>
+        let nftsResult: Driver<[PopularNftsEntity]>
     }
     
     init() {
@@ -43,7 +44,8 @@ final class InfoViewModel: BaseViewModel {
 extension InfoViewModel {
     
     func transform(_ input: Input) -> Output {
-        let popularResult: BehaviorRelay<PopularEntity?> = BehaviorRelay(value: nil)
+        let coinResult: BehaviorRelay<[PopularCoinEntity]> = BehaviorRelay(value: [])
+        let nftsResult: BehaviorRelay<[PopularNftsEntity]> = BehaviorRelay(value: [])
         
         input.reloadTrigger
             .withUnretained(self)
@@ -54,12 +56,14 @@ extension InfoViewModel {
                     }
             }
             .bind(with: self) { onwer, data in
-                popularResult.accept(data)
+                coinResult.accept(data.coins)
+                nftsResult.accept(data.nfts)
             }
             .disposed(by: disposeBag)
         
         return Output(
-            popularReslut: popularResult.asDriver()
+            coinResult: coinResult.asDriver(),
+            nftsResult: nftsResult.asDriver()
         )
     }
     

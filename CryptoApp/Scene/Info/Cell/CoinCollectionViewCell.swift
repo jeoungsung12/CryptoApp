@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 import SnapKit
 import RxSwift
 import RxCocoa
@@ -23,14 +24,70 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
     }
     
     override func configureView() {
+        rankLabel.font = .largeRegular
+        rankLabel.textColor = .customGray
         
+        thumbImageView.contentMode = .scaleAspectFill
+        thumbImageView.clipsToBounds = true
+        thumbImageView.backgroundColor = .customLightGray
+        thumbImageView.layer.cornerRadius = 15
+        
+        titleLabel.font = .largeBold
+        titleLabel.textColor = .customDarkGray
+        
+        subTitleLabel.font = .smallRegular
+        subTitleLabel.textColor = .customLightGray
+        
+        arrowImageView.contentMode = .scaleAspectFit
     }
     
     override func configureHierarchy() {
-        
+        [rankLabel, thumbImageView, titleLabel, subTitleLabel, percentLabel, arrowImageView]
+            .forEach { self.contentView.addSubview($0) }
     }
     
     override func configureLayout() {
+        rankLabel.snp.makeConstraints { make in
+            make.leading.verticalEdges.equalToSuperview()
+        }
+        
+        thumbImageView.snp.makeConstraints { make in
+            make.size.equalTo(30)
+            make.verticalEdges.equalToSuperview()
+            make.leading.equalTo(rankLabel.snp.trailing).offset(12)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalTo(thumbImageView.snp.trailing).offset(8)
+        }
+        
+        subTitleLabel.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+            make.top.greaterThanOrEqualTo(titleLabel.snp.bottom).offset(4)
+            make.leading.equalTo(thumbImageView.snp.trailing).offset(8)
+        }
+        
+        //TODO: Layout
+        percentLabel.snp.makeConstraints { make in
+            
+        }
+        
+        arrowImageView.snp.makeConstraints { make in
+            
+        }
+    }
+    
+    func configure(_ model: PopularCoinEntity,_ items: Int) {
+        rankLabel.text = "\(items + 1)"
+        
+        
+        if let url = URL(string: model.image) {
+            //TODO: ImageDownSampling
+            thumbImageView.kf.setImage(with: url)
+        } else {
+            //TODO: 예외처리
+        }
         
     }
     
