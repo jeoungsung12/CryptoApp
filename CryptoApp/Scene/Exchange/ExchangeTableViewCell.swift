@@ -48,12 +48,12 @@ final class ExchangeTableViewCell: BaseTableViewCell, ReusableIdentifier {
     override func configureLayout() {
         titleLabel.snp.makeConstraints { make in
             make.height.equalTo(30)
-            make.leading.equalToSuperview().inset(12)
+            make.leading.equalToSuperview().inset(24)
         }
         
         amountLabel.snp.makeConstraints { make in
             make.height.equalTo(20)
-            make.trailing.verticalEdges.equalToSuperview().inset(12)
+            make.trailing.verticalEdges.equalToSuperview().inset(24)
         }
         
 //        percentLabel.snp.makeConstraints { make in

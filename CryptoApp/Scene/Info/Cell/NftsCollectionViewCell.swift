@@ -23,7 +23,7 @@ final class NftsCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
     }
     
     override func configureView() {
-        thumbImageView.contentMode = .scaleAspectFill
+        thumbImageView.contentMode = .scaleToFill
         thumbImageView.clipsToBounds = true
         thumbImageView.backgroundColor = .customGray
         thumbImageView.layer.cornerRadius = 20

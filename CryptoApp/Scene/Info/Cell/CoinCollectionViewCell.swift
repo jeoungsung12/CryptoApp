@@ -27,7 +27,7 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         rankLabel.font = .largeRegular
         rankLabel.textColor = .customDarkGray
         
-        thumbImageView.contentMode = .scaleAspectFill
+        thumbImageView.contentMode = .scaleToFill
         thumbImageView.clipsToBounds = true
         thumbImageView.backgroundColor = .customGray
         thumbImageView.layer.cornerRadius = 15
