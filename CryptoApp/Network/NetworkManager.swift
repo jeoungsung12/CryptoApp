@@ -7,18 +7,34 @@
 
 import Foundation
 import Alamofire
+import RxSwift
+import RxCocoa
 
-protocol NetworkManagerType {
-    func getData()
-}
+//TODO: Protocol
 
-final class NetworkManager: NetworkManagerType {
+final class NetworkManager {
+    
     static let shared = NetworkManager()
     
     private init() { }
     
-    func getData() {
-        
+    func getData<T:Decodable, U:Router>(_ api: U) -> Observable<T> {
+        return Observable.create { observer in
+            AF.request(api)
+                .validate(statusCode: 200..<500)
+                .responseDecodable(of: T.self) { response in
+                    switch response.result {
+                    case let .success(data):
+                        observer.onNext(data)
+                        observer.onCompleted()
+                        
+                    case let .failure(error):
+                        //TODO: CustomError 변경
+                        observer.onError(error)
+                    }
+                }
+            return Disposables.create()
+        }
     }
     
 }
