@@ -22,9 +22,18 @@ class ExchangeViewController: BaseViewController {
     }
     
     override func setBinding() {
-        let input = ExchangeViewModel.Input()
+        let input = ExchangeViewModel.Input(
+            reloadTrigger: PublishRelay()
+        )
         let output = viewModel.transform(input)
+        //TODO: ViewWillAppear
+        input.reloadTrigger.accept(())
         
+        output.coinResult
+            .drive(tableView.rx.items(cellIdentifier: ExchangeTableViewCell.id, cellType: ExchangeTableViewCell.self)) { row, element, cell in
+                cell.configure(element)
+            }
+            .disposed(by: disposeBag)
         
         tableView.rx.tableHeaderView
             .onNext(headerView)

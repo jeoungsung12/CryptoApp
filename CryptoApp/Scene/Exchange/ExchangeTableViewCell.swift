@@ -75,8 +75,13 @@ final class ExchangeTableViewCell: BaseTableViewCell, ReusableIdentifier {
 
 extension ExchangeTableViewCell {
     
-    func configure() {
-        
+    func configure(_ model: ExchangeEntity) {
+        titleLabel.text = model.marketName
+        //TODO: 소숫점 계산
+        currentLabel.text = model.currentPrice.formatted()
+        percentLabel.text = model.changePercent.formatted()
+        previousLabel.text = model.changePrice.formatted()
+        amountLabel.text = model.tradeVolume.formatted()
     }
     
 }
