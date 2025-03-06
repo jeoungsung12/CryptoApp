@@ -41,7 +41,7 @@ extension ExchangeViewModel {
             .flatMapLatest { _ in
                 return self.service.getAllCoin()
                     .catch { error in
-                        return
+                        return Observable.just([])
                     }
             }
             .bind { value in

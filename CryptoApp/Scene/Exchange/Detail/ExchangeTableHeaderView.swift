@@ -40,30 +40,28 @@ final class ExchangeTableHeaderView: BaseView {
     override func configureLayout() {
         titleLabel.snp.makeConstraints { make in
             make.width.equalTo(100)
-            make.height.equalTo(30)
-            make.leading.verticalEdges.equalToSuperview().inset(12)
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().inset(12)
         }
         
         amountButton.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.height.equalTo(20)
-            make.trailing.verticalEdges.equalToSuperview().inset(12)
+            make.height.equalTo(26)
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().inset(12)
         }
         
-        previousButton.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.height.equalTo(20)
-            make.verticalEdges.equalToSuperview().inset(12)
-            make.trailing.equalTo(amountButton.snp.leading).inset(24)
-        }
-        
-        currentButton.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.height.equalTo(20)
-            make.verticalEdges.equalToSuperview().inset(12)
-            make.trailing.equalTo(previousButton.snp.leading).inset(12)
-            make.leading.greaterThanOrEqualTo(titleLabel.snp.trailing).offset(12)
-        }
+//        previousButton.snp.makeConstraints { make in
+//            make.height.equalTo(26)
+//            make.centerY.equalToSuperview()
+//            make.trailing.equalTo(amountButton.snp.leading).offset(36)
+//        }
+//        
+//        currentButton.snp.makeConstraints { make in
+//            make.height.equalTo(26)
+//            make.centerY.equalToSuperview()
+//            make.trailing.equalTo(previousButton.snp.leading).inset(12)
+//            make.leading.greaterThanOrEqualTo(titleLabel.snp.trailing).offset(12)
+//        }
     }
     
     deinit {

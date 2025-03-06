@@ -23,7 +23,7 @@ final class TabBarController: UITabBarController {
         self.tabBar.scrollEdgeAppearance = appearance
         
         self.selectedIndex = 0
-        self.tabBar.tintColor = .white
+        self.tabBar.tintColor = .customDarkGray
         self.tabBar.unselectedItemTintColor = .darkGray
         
         let firstVC = UINavigationController(rootViewController: ExchangeViewController())

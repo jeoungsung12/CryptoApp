@@ -16,6 +16,7 @@
 		E4A7A3192D797014000A85A8 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = E4A7A3182D797014000A85A8 /* Alamofire */; };
 		E4A7A31C2D79701F000A85A8 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E4A7A31B2D79701F000A85A8 /* Kingfisher */; };
 		E4A7A3212D79707C000A85A8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E4A7A3202D79707C000A85A8 /* RealmSwift */; };
+		E4A7A4922D79A708000A85A8 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E4A7A3202D79707C000A85A8 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				E4A7A4922D79A708000A85A8 /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,9 +10,10 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class ExchangeViewController: BaseViewController {
-    private let tableView = UITableView()
+final class ExchangeViewController: BaseViewController {
     private let headerView = ExchangeTableHeaderView()
+    
+    private let tableView = UITableView()
     
     private let viewModel = ExchangeViewModel()
     private var disposeBag = DisposeBag()
@@ -34,23 +35,29 @@ class ExchangeViewController: BaseViewController {
                 cell.configure(element)
             }
             .disposed(by: disposeBag)
-        
-        tableView.rx.tableHeaderView
-            .onNext(headerView)
     }
     
     override func configureView() {
         self.setNavigation(title: "거래소")
+        headerView.backgroundColor = .customLightGray
         configureTableView()
     }
     
     override func configureHierarchy() {
-        self.view.addSubview(tableView)
+        [headerView, tableView].forEach {
+            self.view.addSubview($0)
+        }
     }
     
     override func configureLayout() {
-        tableView.snp.makeConstraints { make in
+        headerView.snp.makeConstraints { make in
+            make.height.equalTo(40)
             make.top.equalTo(self.view.safeAreaLayoutGuide)
+            make.horizontalEdges.equalToSuperview()
+        }
+        
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
             make.bottom.horizontalEdges.equalToSuperview()
         }
     }
@@ -67,7 +74,7 @@ extension ExchangeViewController {
         tableView.separatorStyle = .none
         tableView.backgroundColor = .white
         tableView.showsVerticalScrollIndicator = false
-        tableView.register(ExchangeTableViewCell.self, forHeaderFooterViewReuseIdentifier: ExchangeTableViewCell.id)
+        tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.id)
     }
     
 }

@@ -10,7 +10,6 @@ import SnapKit
 
 final class UpDownButton: BaseButton {
     private let nameLabel = UILabel()
-    private let stackView = UIStackView()
     private let arrowUp = UIImageView()
     private let arrowDown = UIImageView()
     //TODO: 버튼의 상태 저장
@@ -31,39 +30,32 @@ final class UpDownButton: BaseButton {
         
         arrowUp.image = .arrowUp
         arrowDown.image = .arrowDown
-        
-        stackView.axis = .vertical
-        stackView.spacing = 4
-        stackView.alignment = .center
-        stackView.distribution = .fillEqually
     }
     
     override func configureHierarchy() {
-        [arrowUp, arrowDown].forEach {
-            stackView.addArrangedSubview($0)
-        }
         
-        [nameLabel, stackView].forEach {
+        [nameLabel, arrowUp, arrowDown].forEach {
             self.addSubview($0)
         }
     }
     
     override func configureLayout() {
         nameLabel.snp.makeConstraints { make in
-            make.leading.verticalEdges.equalToSuperview()
-        }
-        
-        stackView.snp.makeConstraints { make in
-            make.trailing.verticalEdges.equalToSuperview()
-            make.leading.equalTo(nameLabel.snp.trailing).offset(4)
+            make.centerY.leading.equalToSuperview()
         }
         
         arrowUp.snp.makeConstraints { make in
-            make.size.equalTo(20)
+            make.size.equalTo(9)
+            make.top.equalTo(nameLabel.snp.top)
+            make.trailing.lessThanOrEqualToSuperview().inset(4)
+            make.leading.equalTo(nameLabel.snp.trailing).offset(4)
         }
         
         arrowDown.snp.makeConstraints { make in
-            make.size.equalTo(20)
+            make.size.equalTo(9)
+            make.bottom.equalTo(nameLabel.snp.bottom)
+            make.trailing.lessThanOrEqualToSuperview().inset(4)
+            make.leading.equalTo(nameLabel.snp.trailing).offset(4)
         }
     }
     

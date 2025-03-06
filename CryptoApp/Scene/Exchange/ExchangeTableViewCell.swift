@@ -39,7 +39,7 @@ final class ExchangeTableViewCell: BaseTableViewCell, ReusableIdentifier {
     }
     
     override func configureHierarchy() {
-        [titleLabel, currentLabel, percentLabel, previousLabel, amountLabel]
+        [titleLabel, amountLabel, previousLabel, percentLabel, currentLabel]
             .forEach {
                 self.contentView.addSubview($0)
             }
@@ -47,24 +47,31 @@ final class ExchangeTableViewCell: BaseTableViewCell, ReusableIdentifier {
     
     override func configureLayout() {
         titleLabel.snp.makeConstraints { make in
-            
-        }
-        
-        currentLabel.snp.makeConstraints { make in
-            
-        }
-        
-        percentLabel.snp.makeConstraints { make in
-            
-        }
-        
-        previousLabel.snp.makeConstraints { make in
-            
+            make.height.equalTo(30)
+            make.leading.equalToSuperview().inset(12)
         }
         
         amountLabel.snp.makeConstraints { make in
-            
+            make.height.equalTo(20)
+            make.trailing.verticalEdges.equalToSuperview().inset(12)
         }
+        
+//        percentLabel.snp.makeConstraints { make in
+//            make.height.equalTo(20)
+//            make.trailing.equalTo(amountLabel.snp.leading).inset(24)
+//        }
+//        
+//        previousLabel.snp.makeConstraints { make in
+//            make.height.equalTo(10)
+//            make.top.equalTo(percentLabel.snp.bottom).offset(4)
+//            make.trailing.equalTo(amountLabel.snp.leading).inset(24)
+//        }
+//        
+//        currentLabel.snp.makeConstraints { make in
+//            make.height.equalTo(20)
+//            make.trailing.equalTo(percentLabel.snp.leading).inset(12)
+//            make.leading.greaterThanOrEqualTo(titleLabel.snp.trailing).offset(12)
+//        }
     }
     
     deinit {
@@ -82,6 +89,9 @@ extension ExchangeTableViewCell {
         percentLabel.text = model.changePercent.formatted()
         previousLabel.text = model.changePrice.formatted()
         amountLabel.text = model.tradeVolume.formatted()
+        
+        //TODO: 색 계산
+        
     }
     
 }
