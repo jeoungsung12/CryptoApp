@@ -23,7 +23,7 @@ extension UpbitResponseDTO {
             currentPrice: .currentToString(tradePrice),
             tradeVolume: .amountToString(accTradePrice24H),
             changePrice: .doubleToString(signedChangePrice),
-            changePercent: .doubleToString(signedChangeRate) + "%",
+            changePercent: .doubleToString(signedChangeRate * 100) + "%",
             color: .stringColor(signedChangeRate)
         )
     }

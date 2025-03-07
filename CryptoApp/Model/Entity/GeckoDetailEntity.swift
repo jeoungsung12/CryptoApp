@@ -5,7 +5,8 @@
 //  Created by 정성윤 on 3/6/25.
 //
 
-import Foundation
+import UIKit
+
 struct GeckoDetailEntity {
     let id: String
     let name: String
@@ -29,9 +30,10 @@ struct GeckoDetailEntity {
     func toHeaderEntity() -> DetailHeaderEntity {
         return DetailHeaderEntity(
             price: .doubleToString(price),
-            percent: .doubleToString(percent),
+            percent: .doubleToString(percent) + "%",
             chartData: chartData,
-            lastUpdated: lastUpdated
+            lastUpdated: lastUpdated,
+            color: .stringColor(percent)
         )
     }
     
@@ -60,6 +62,7 @@ struct DetailHeaderEntity {
     let percent: String
     let chartData: [Double]
     let lastUpdated: String
+    let color: UIColor
 }
 
 struct DetailMiddleEntity {

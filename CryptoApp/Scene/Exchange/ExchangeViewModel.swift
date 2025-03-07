@@ -38,8 +38,8 @@ extension ExchangeViewModel {
         
         input.reloadTrigger
             .withUnretained(self)
-            .flatMapLatest { _ in
-                return self.service.getAllCoin()
+            .flatMapLatest { owner, _ in
+                return owner.service.getAllCoin()
                     .catch { error in
                         return Observable.just([])
                     }

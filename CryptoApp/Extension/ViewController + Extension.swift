@@ -19,16 +19,16 @@ extension UIViewController {
         let titleItem = UIBarButtonItem(customView: titleLabel)
         self.navigationItem.leftBarButtonItem = titleItem
         
-        let back = UIBarButtonItem(title: backTitle, image: backImage, target: nil, action: nil)
-        self.navigationItem.backBarButtonItem = back
-        
         let appearance = UINavigationBarAppearance()
         appearance.backgroundColor = .white
+        appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
         appearance.titleTextAttributes = [.foregroundColor: color]
         
         navigationBar.tintColor = color
         navigationBar.standardAppearance = appearance
         navigationBar.scrollEdgeAppearance = appearance
+        
+        self.navigationItem.backButtonDisplayMode = .minimal
     }
     
 }

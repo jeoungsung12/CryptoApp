@@ -49,13 +49,13 @@ extension InfoViewModel {
         
         input.reloadTrigger
             .withUnretained(self)
-            .flatMapLatest { _ in
-                return self.service.getTrending()
+            .flatMapLatest { owner, _ in
+                return owner.service.getTrending()
                     .catch { error in
                         return Observable.just(PopularEntity(coins: [], nfts: []))
                     }
             }
-            .bind(with: self) { onwer, data in
+            .bind { data in
                 coinResult.accept(data.coins)
                 nftsResult.accept(data.nfts)
             }

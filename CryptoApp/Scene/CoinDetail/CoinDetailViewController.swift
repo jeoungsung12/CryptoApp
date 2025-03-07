@@ -13,8 +13,9 @@ import RxCocoa
 import RxDataSources
 
 final class CoinDetailViewController: BaseViewController {
+    private let starButton = UIBarButtonItem(image: .star, style: .plain, target: nil, action: nil)
     private let tableView = UITableView()
-    
+    private let navigationBar = DetailCustomNavigation()
     private let viewModel: CoinDetailViewModel
     private var disposeBag = DisposeBag()
     
@@ -73,9 +74,18 @@ final class CoinDetailViewController: BaseViewController {
             }
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
+        
+        output.detailResult
+            .drive(with: self) { owner, entity in
+                guard let entity = entity else { return }
+                owner.navigationBar.configure(entity.name, entity.image)
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureView() {
+        self.navigationItem.titleView = navigationBar
+        self.navigationItem.rightBarButtonItem = starButton
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension

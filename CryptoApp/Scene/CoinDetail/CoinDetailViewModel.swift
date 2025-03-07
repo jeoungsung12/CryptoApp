@@ -63,13 +63,13 @@ extension CoinDetailViewModel {
         
         input.reloadTrigger
             .withUnretained(self)
-            .flatMapLatest { _ in
-                return self.service.getCoinDetail(id: self.coinId)
+            .flatMapLatest { owner, _ in
+                return owner.service.getCoinDetail(id: owner.coinId)
                     .catch { error in
                         return Observable.empty()
                     }
             }
-            .bind(with: self) { owner, entity in
+            .bind { entity in
                 detailResult.accept(entity)
             }
             .disposed(by: disposeBag)
