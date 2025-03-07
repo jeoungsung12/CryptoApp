@@ -10,7 +10,7 @@ import SnapKit
 
 final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
     private let titleLabel = UILabel()
-    private let moreBtn = UIButton()
+    private let moreBtn = MoreButton()
     private let priceContainerView = UIStackView()
     private let marketPriceSection = DetailSectionView()
     private let fdvSection = DetailSectionView()
@@ -26,24 +26,13 @@ final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
         titleLabel.textAlignment = .left
         titleLabel.font = .boldSystemFont(ofSize: 17)
         
-        priceContainerView.backgroundColor = .customGray
+        priceContainerView.backgroundColor = .customLightGray
         priceContainerView.clipsToBounds = true
         priceContainerView.layer.cornerRadius = 15
-        priceContainerView.axis = .horizontal
-        priceContainerView.spacing = 0
+        priceContainerView.axis = .vertical
+        priceContainerView.spacing = 12
         priceContainerView.distribution = .fillEqually
-        priceContainerView.alignment = .center
-        
-        setBtnConfiguration()
-    }
-    
-    private func setBtnConfiguration() {
-        var config = UIButton.Configuration.plain()
-        config.image = .arrowRight
-        config.baseForegroundColor = .customGray
-        config.title = "더보기"
-        config.imagePlacement = .trailing
-        self.moreBtn.configuration = config
+        priceContainerView.alignment = .leading
     }
     
     override func configureHierarchy() {
@@ -59,7 +48,8 @@ final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
         }
         
         moreBtn.snp.makeConstraints { make in
-            make.top.trailing.equalToSuperview().inset(24)
+            make.leading.greaterThanOrEqualToSuperview().offset(4)
+            make.verticalEdges.trailing.equalToSuperview().inset(24)
         }
         
         priceContainerView.snp.makeConstraints { make in

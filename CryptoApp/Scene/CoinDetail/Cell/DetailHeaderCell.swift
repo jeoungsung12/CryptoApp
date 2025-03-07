@@ -10,12 +10,10 @@ import SnapKit
 
 final class DetailHeaderCell: BaseTableViewCell, ReusableIdentifier {
     private let priceLabel = UILabel()
-    private let arrowImageView = UIImageView()
     //TODO: GeneralView로 만들기
-    private let percentLabel = UILabel()
     private let updateLabel = UILabel()
-    //TODO: ChartView
-    private let chartView = CoinChartHostingView(rootView: CoinChartView())
+    
+    private var chartView = CoinChartHostingView(rootView: CoinChartView(chartData: []))
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -26,38 +24,52 @@ final class DetailHeaderCell: BaseTableViewCell, ReusableIdentifier {
         priceLabel.textAlignment = .left
         priceLabel.font = .boldSystemFont(ofSize: 30)
         
-        arrowImageView.contentMode = .scaleAspectFit
-        
-        percentLabel.font = .largeBold
-        percentLabel.textAlignment = .left
-        
         updateLabel.textColor = .customGray
         updateLabel.font = .smallRegular
         updateLabel.textAlignment = .left
     }
     
     override func configureHierarchy() {
-        [priceLabel, arrowImageView, percentLabel, updateLabel].forEach {
+        [priceLabel, chartView.view, updateLabel].forEach {
             self.contentView.addSubview($0)
         }
-        //TODO: ChartView ADD
     }
     
     override func configureLayout() {
         priceLabel.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview().inset(24)
+            make.top.equalToSuperview()
+            make.horizontalEdges.equalToSuperview().inset(24)
         }
         
+        chartView.view.snp.makeConstraints { make in
+            make.height.equalToSuperview().dividedBy(3)
+            make.top.equalTo(priceLabel.snp.bottom).offset(24)
+            make.horizontalEdges.equalToSuperview().inset(24)
+        }
         
+        updateLabel.snp.makeConstraints { make in
+            make.top.equalTo(chartView.view.snp.bottom).offset(8)
+            make.bottom.horizontalEdges.equalToSuperview().inset(24)
+        }
     }
     
     func configure(_ model: DetailHeaderEntity) {
         //TODO: 포맷 수정
         priceLabel.text = model.price.formatted()
         //TODO: arrow 이미지 및 퍼센트
-        //TODO: Chart
         //TODO: update format
         updateLabel.text = model.lastUpdated
+        
+        //TODO: 이게 최선?
+        chartView = CoinChartHostingView(rootView: CoinChartView(chartData: model.chartData))
+        chartView.view.removeFromSuperview()
+        self.contentView.addSubview(chartView.view)
+
+        chartView.view.snp.makeConstraints { make in
+            make.height.equalToSuperview().dividedBy(3)
+            make.top.equalTo(priceLabel.snp.bottom).offset(24)
+            make.horizontalEdges.equalToSuperview().inset(24)
+        }
     }
     
 }

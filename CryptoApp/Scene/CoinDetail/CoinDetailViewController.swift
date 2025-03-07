@@ -45,16 +45,19 @@ final class CoinDetailViewController: BaseViewController {
             case let .header(entity):
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailHeaderCell.id, for: indexPath) as? DetailHeaderCell else { return UITableViewCell() }
                 cell.configure(entity)
+                cell.selectionStyle = .none
                 return cell
                 
             case let .middle(entity):
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailMiddleCell.id, for: indexPath) as? DetailMiddleCell else { return UITableViewCell() }
                 cell.configure(entity)
+                cell.selectionStyle = .none
                 return cell
                 
             case let .footer(entity):
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: DetailFooterCell.id, for: indexPath) as? DetailFooterCell else { return UITableViewCell() }
                 cell.configure(entity)
+                cell.selectionStyle = .none
                 return cell
             }
         }

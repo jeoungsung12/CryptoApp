@@ -10,7 +10,7 @@ import SnapKit
 
 final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
     private let titleLabel = UILabel()
-    private let moreBtn = UIButton()
+    private let moreBtn = MoreButton()
     private let containerView = UIView()
     private let priceContainerView = UIStackView()
     private let historyContainerView = UIStackView()
@@ -33,7 +33,7 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
         titleLabel.textAlignment = .left
         titleLabel.font = .boldSystemFont(ofSize: 17)
         
-        containerView.backgroundColor = .customGray
+        containerView.backgroundColor = .customLightGray
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = 15
         
@@ -50,16 +50,6 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
             $0.textAlignment = .left
         }
         
-        setBtnConfiguration()
-    }
-    
-    private func setBtnConfiguration() {
-        var config = UIButton.Configuration.plain()
-        config.image = .arrowRight
-        config.baseForegroundColor = .customGray
-        config.title = "더보기"
-        config.imagePlacement = .trailing
-        self.moreBtn.configuration = config
     }
     
     override func configureHierarchy() {
@@ -81,7 +71,8 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
         }
         
         moreBtn.snp.makeConstraints { make in
-            make.top.trailing.equalToSuperview().inset(24)
+            make.leading.greaterThanOrEqualToSuperview().offset(4)
+            make.verticalEdges.trailing.equalToSuperview().inset(24)
         }
         
         containerView.snp.makeConstraints { make in
@@ -96,7 +87,7 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
         }
         
         historyContainerView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview()
+            make.bottom.horizontalEdges.equalToSuperview()
             make.height.equalToSuperview().dividedBy(2)
         }
     }
