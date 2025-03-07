@@ -13,12 +13,14 @@ final class GeckoService {
     private let repository: GeckoRepositoryType = GeckoRepository()
     private var disposeBag = DisposeBag()
     
-    func getCoinDetail(id: String) -> Observable<GeckoDetailResponseDTO> {
-        //TODO: 수정
+    func getCoinDetail(id: String) -> Observable<GeckoDetailEntity> {
         return Observable.create { [weak self] observer in
             self?.repository.getCoinDetail(id: id)
                 .subscribe(onNext: { data in
-                    observer.onNext(data)
+                    guard let data = data.first else { observer.onError(CoingeckoError.DecodingError)
+                        return
+                    }
+                    observer.onNext(data.toEntity())
                     observer.onCompleted()
                 }, onError: { error in
                     observer.onError(error)

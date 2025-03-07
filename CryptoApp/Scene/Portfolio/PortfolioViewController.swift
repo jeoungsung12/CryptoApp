@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PortfolioViewController: UIViewController {
+final class PortfolioViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()

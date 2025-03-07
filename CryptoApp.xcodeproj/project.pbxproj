@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E404898E2D7AD2EF003BADD3 /* RxDataSources in Frameworks */ = {isa = PBXBuildFile; productRef = E404898D2D7AD2EF003BADD3 /* RxDataSources */; };
 		E4A7A2FF2D796E5D000A85A8 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E4A7A2FE2D796E5D000A85A8 /* .gitignore */; };
 		E4A7A3082D796FBF000A85A8 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = E4A7A3072D796FBF000A85A8 /* RxCocoa */; };
 		E4A7A30A2D796FBF000A85A8 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E4A7A3092D796FBF000A85A8 /* RxSwift */; };
@@ -70,6 +71,7 @@
 				E4A7A3132D796FF8000A85A8 /* NVActivityIndicatorView in Frameworks */,
 				E4A7A31C2D79701F000A85A8 /* Kingfisher in Frameworks */,
 				E4A7A30D2D796FC8000A85A8 /* SnapKit in Frameworks */,
+				E404898E2D7AD2EF003BADD3 /* RxDataSources in Frameworks */,
 				E4A7A30A2D796FBF000A85A8 /* RxSwift in Frameworks */,
 				E4A7A3082D796FBF000A85A8 /* RxCocoa in Frameworks */,
 			);
@@ -124,6 +126,7 @@
 				E4A7A3182D797014000A85A8 /* Alamofire */,
 				E4A7A31B2D79701F000A85A8 /* Kingfisher */,
 				E4A7A3202D79707C000A85A8 /* RealmSwift */,
+				E404898D2D7AD2EF003BADD3 /* RxDataSources */,
 			);
 			productName = CryptoApp;
 			productReference = E4A7A2DB2D796D63000A85A8 /* CryptoApp.app */;
@@ -161,6 +164,7 @@
 				E4A7A3172D797014000A85A8 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				E4A7A31A2D79701F000A85A8 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				E4A7A31F2D79707C000A85A8 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				E404898C2D7AD2EF003BADD3 /* XCRemoteSwiftPackageReference "RxDataSources" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E4A7A2DC2D796D63000A85A8 /* Products */;
@@ -403,6 +407,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E404898C2D7AD2EF003BADD3 /* XCRemoteSwiftPackageReference "RxDataSources" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RxSwiftCommunity/RxDataSources.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
 		E4A7A3062D796FBF000A85A8 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
@@ -462,6 +474,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E404898D2D7AD2EF003BADD3 /* RxDataSources */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E404898C2D7AD2EF003BADD3 /* XCRemoteSwiftPackageReference "RxDataSources" */;
+			productName = RxDataSources;
+		};
 		E4A7A3072D796FBF000A85A8 /* RxCocoa */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E4A7A3062D796FBF000A85A8 /* XCRemoteSwiftPackageReference "RxSwift" */;

@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class SearchViewController: BaseViewController {
+final class SearchViewController: BaseViewController {
     private let categoryView = SearchCategoryView()
     private let tableView = UITableView()
     
@@ -58,7 +58,7 @@ extension SearchViewController {
     private func configureTableView() {
         tableView.backgroundColor = .white
         tableView.showsVerticalScrollIndicator = false
-        tableView.register(<#T##nib: UINib?##UINib?#>, forCellReuseIdentifier: <#T##String#>)
+//        tableView.register(<#T##nib: UINib?##UINib?#>, forCellReuseIdentifier: <#T##String#>)
     }
     
     

@@ -46,6 +46,26 @@ final class InfoViewController: BaseViewController {
                 cell.configure(element)
             }
             .disposed(by: disposeBag)
+        
+        coinCollectionView.rx.modelSelected(PopularCoinEntity.self)
+            .asDriver()
+            .drive(with: self) { owner, entity in
+                let vm = CoinDetailViewModel(coinId: entity.id)
+                let vc = CoinDetailViewController(viewModel: vm)
+                //TODO: Coordinate
+                owner.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        nftsCollectionView.rx.modelSelected(PopularNftsEntity.self)
+            .asDriver()
+            .drive(with: self) { owner, entity in
+                let vm = CoinDetailViewModel(coinId: entity.id)
+                let vc = CoinDetailViewController(viewModel: vm)
+                //TODO: Coordinate
+                owner.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureView() {
