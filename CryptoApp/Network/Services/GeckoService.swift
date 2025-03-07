@@ -44,7 +44,17 @@ final class GeckoService {
         }
     }
     
-    func getSearch(text: String) {
-        
+    func getSearch(text: String) -> Observable<[SearchEntity]> {
+        return Observable.create { [weak self] observer in
+            self?.repository.getSearch(text: text)
+                .subscribe(onNext: { data in
+                    observer.onNext(data.toEntity())
+                    observer.onCompleted()
+                }, onError: { error in
+                    observer.onError(error)
+                })
+                .disposed(by: self?.disposeBag ?? DisposeBag())
+            return Disposables.create()
+        }
     }
 }

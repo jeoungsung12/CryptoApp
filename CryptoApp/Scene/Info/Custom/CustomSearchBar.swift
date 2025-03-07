@@ -11,8 +11,9 @@ import RxSwift
 import RxCocoa
 
 final class CustomSearchBar: BaseView {
-    private let searchButton = UIButton()
-    private let searchTextField = UITextField()
+    let searchButton = UIButton()
+    let searchTextField = UITextField()
+    private var disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,10 +22,6 @@ final class CustomSearchBar: BaseView {
         self.layer.cornerRadius = 20
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor.customGray.cgColor
-    }
-    
-    override func setBinding() {
-        //TODO: Button, TextField Binding
     }
     
     override func configureView() {

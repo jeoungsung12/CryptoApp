@@ -10,14 +10,15 @@ import RxSwift
 import RxCocoa
 
 final class SearchViewModel: BaseViewModel {
+    private let service = GeckoService()
     private var disposeBag = DisposeBag()
     
     struct Input {
-        
+        let searchTrigger: PublishRelay<String>
     }
     
     struct Output {
-        
+        let searchResult: Driver<[SearchEntity]>
     }
     
     init() {
@@ -32,8 +33,24 @@ final class SearchViewModel: BaseViewModel {
 extension SearchViewModel {
     
     func transform(_ input: Input) -> Output {
+        let searchResult: BehaviorRelay<[SearchEntity]> = BehaviorRelay(value: [])
         
-        return Output()
+        input.searchTrigger
+            .withUnretained(self)
+            .flatMapLatest { text in
+                return self.service.getSearch(text: text.1)
+                    .catch { error in
+                        return Observable.just([])
+                    }
+            }
+            .bind(with: self) { owner, entity in
+                searchResult.accept(entity)
+            }
+            .disposed(by: disposeBag)
+        
+        return Output(
+            searchResult: searchResult.asDriver(onErrorJustReturn: [])
+        )
     }
     
 }

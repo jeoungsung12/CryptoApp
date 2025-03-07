@@ -66,6 +66,16 @@ final class InfoViewController: BaseViewController {
                 owner.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
+        
+        searchBar.searchButton.rx.tap
+            .observe(on: MainScheduler.instance)
+            .bind(with: self) { owner, text in
+                //TODO: 텍스트 예외처리
+//                guard let text = owner.searchBar.searchTextField.text else { return }
+                let vc = SearchViewController()
+                owner.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureView() {

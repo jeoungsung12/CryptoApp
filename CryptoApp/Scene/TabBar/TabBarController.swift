@@ -23,6 +23,7 @@ final class TabBarController: UITabBarController {
         self.tabBar.scrollEdgeAppearance = appearance
         
         self.selectedIndex = 0
+        self.tabBar.shadowImage = nil
         self.tabBar.tintColor = .customDarkGray
         self.tabBar.unselectedItemTintColor = .darkGray
         

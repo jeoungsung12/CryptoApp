@@ -22,7 +22,27 @@ final class SearchViewController: BaseViewController {
     }
     
     override func setBinding() {
+        let input = SearchViewModel.Input(
+            searchTrigger: PublishRelay()
+        )
+        let output = viewModel.transform(input)
+        input.searchTrigger.accept("Bitcoin")
         
+        output.searchResult
+            .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { row, element, cell in
+                cell.configure(element)
+            }
+            .disposed(by: disposeBag)
+        
+        tableView.rx.modelSelected(SearchEntity.self)
+            .observe(on: MainScheduler.instance)
+            .bind(with: self) { owner, entity in
+                let vm = CoinDetailViewModel(coinId: entity.id)
+                let vc = CoinDetailViewController(viewModel: vm)
+                //TODO: Coordinate
+                owner.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureView() {
@@ -36,14 +56,14 @@ final class SearchViewController: BaseViewController {
     
     override func configureLayout() {
         categoryView.snp.makeConstraints { make in
-            make.height.equalTo(40)
+            make.height.equalTo(50)
             make.horizontalEdges.equalToSuperview()
             make.top.equalTo(self.view.safeAreaLayoutGuide)
         }
         
         tableView.snp.makeConstraints { make in
             make.top.equalTo(categoryView.snp.bottom)
-            make.horizontalEdges.equalToSuperview()
+            make.bottom.horizontalEdges.equalToSuperview()
         }
     }
     
@@ -57,10 +77,10 @@ extension SearchViewController {
     
     private func configureTableView() {
         tableView.backgroundColor = .white
+        tableView.separatorStyle = .none
+        tableView.rowHeight = 70
         tableView.showsVerticalScrollIndicator = false
-//        tableView.register(<#T##nib: UINib?##UINib?#>, forCellReuseIdentifier: <#T##String#>)
+        tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
     }
-    
-    
     
 }

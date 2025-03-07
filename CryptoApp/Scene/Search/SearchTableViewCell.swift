@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 import SnapKit
 import RxSwift
 import RxCocoa
@@ -25,20 +26,23 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
         thumbImageView.contentMode = .scaleToFill
         thumbImageView.clipsToBounds = true
         thumbImageView.backgroundColor = .customGray
-        thumbImageView.layer.cornerRadius = 15
+        thumbImageView.layer.cornerRadius = 20
         
         titleLabel.font = .boldSystemFont(ofSize: 15)
         titleLabel.textColor = .customDarkGray
         
-        subTitleLabel.font = .smallRegular
+        subTitleLabel.font = .largeRegular
         subTitleLabel.textColor = .customGray
         
         rankLabel.font = .smallBold
         rankLabel.textColor = .customGray
+        rankLabel.clipsToBounds = true
         rankLabel.layer.cornerRadius = 5
+        rankLabel.textAlignment = .center
         rankLabel.backgroundColor = .customLightGray
         
         starbutton.tintColor = .customDarkGray
+        starbutton.contentMode = .scaleAspectFit
     }
     
     override func configureHierarchy() {
@@ -49,12 +53,13 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
     
     override func configureLayout() {
         thumbImageView.snp.makeConstraints { make in
-            make.size.equalTo(30)
+            make.size.equalTo(40)
+            make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(24)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(thumbImageView.snp.bottom)
+            make.top.equalTo(thumbImageView.snp.top)
             make.leading.equalTo(thumbImageView.snp.trailing).offset(12)
         }
         
@@ -65,14 +70,30 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
         }
         
         rankLabel.snp.makeConstraints { make in
-            make.width.equalTo(30)
             make.top.equalTo(titleLabel.snp.top)
             make.bottom.equalTo(titleLabel.snp.bottom)
+            make.leading.equalTo(titleLabel.snp.trailing).offset(4)
+        }
+        
+        starbutton.snp.makeConstraints { make in
+            make.size.equalTo(30)
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().inset(24)
         }
     }
     
-    func configure() {
+    func configure(_ model: SearchEntity) {
+        titleLabel.text = model.symbol
+        subTitleLabel.text = model.name
+        //TODO: Int -> String
+        rankLabel.text = " #\(model.rank) "
+        starbutton.setImage(.star, for: .normal)
         
+        if let url = URL(string: model.thumb) {
+            thumbImageView.kf.setImage(with: url)
+        } else {
+            //TODO: 예외처리
+        }
     }
     
 }
