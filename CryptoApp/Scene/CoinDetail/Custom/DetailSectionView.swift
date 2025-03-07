@@ -46,10 +46,9 @@ final class DetailSectionView: BaseView {
         }
     }
     
-    func configure(_ title: String,_ price: Double) {
+    func configure(_ title: String,_ price: String) {
         titleLabel.text = title
-        //TODO: 소숫점 자리 계산
-        priceLabel.text = price.formatted()
+        priceLabel.text = price
     }
     
 }

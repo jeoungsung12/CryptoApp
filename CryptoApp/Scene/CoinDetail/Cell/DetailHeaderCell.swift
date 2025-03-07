@@ -54,8 +54,7 @@ final class DetailHeaderCell: BaseTableViewCell, ReusableIdentifier {
     }
     
     func configure(_ model: DetailHeaderEntity) {
-        //TODO: 포맷 수정
-        priceLabel.text = model.price.formatted()
+        priceLabel.text = model.price
         //TODO: arrow 이미지 및 퍼센트
         //TODO: update format
         updateLabel.text = model.lastUpdated

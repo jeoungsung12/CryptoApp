@@ -28,8 +28,8 @@ struct GeckoDetailEntity {
     
     func toHeaderEntity() -> DetailHeaderEntity {
         return DetailHeaderEntity(
-            price: price,
-            percent: percent,
+            price: .doubleToString(price),
+            percent: .doubleToString(percent),
             chartData: chartData,
             lastUpdated: lastUpdated
         )
@@ -37,10 +37,10 @@ struct GeckoDetailEntity {
     
     func toMiddleEntity() -> DetailMiddleEntity {
         return DetailMiddleEntity(
-            high24: high24,
-            low24: low24,
-            allTimeHigh: allTimeHigh,
-            allTimeLow: allTimeLow,
+            high24: .doubleToString(high24),
+            low24: .doubleToString(low24),
+            allTimeHigh: .doubleToString(allTimeHigh),
+            allTimeLow: .doubleToString(allTimeLow),
             highDate: highDate,
             lowDate: lowDate
         )
@@ -48,33 +48,33 @@ struct GeckoDetailEntity {
     
     func toFooterEntity() -> DetailFooterEntity {
         return DetailFooterEntity(
-            marketCap: marketCap,
-            fdvValue: fdvValue,
-            volume: volume
+            marketCap: .doubleToString(marketCap),
+            fdvValue: .doubleToString(fdvValue),
+            volume: .doubleToString(volume)
         )
     }
 }
 
 struct DetailHeaderEntity {
-    let price: Double
-    let percent: Double
+    let price: String
+    let percent: String
     let chartData: [Double]
     let lastUpdated: String
 }
 
 struct DetailMiddleEntity {
-    let high24: Double
-    let low24: Double
-    let allTimeHigh: Double
-    let allTimeLow: Double
+    let high24: String
+    let low24: String
+    let allTimeHigh: String
+    let allTimeLow: String
     let highDate: String
     let lowDate: String
 }
 
 struct DetailFooterEntity {
-    let marketCap: Double
-    let fdvValue: Double
-    let volume: Double
+    let marketCap: String
+    let fdvValue: String
+    let volume: String
 }
 
 extension GeckoDetailResponseDTO {

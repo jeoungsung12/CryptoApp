@@ -12,7 +12,6 @@ import RxCocoa
 
 final class ExchangeViewController: BaseViewController {
     private let headerView = ExchangeTableHeaderView()
-    
     private let tableView = UITableView()
     
     private let viewModel = ExchangeViewModel()
@@ -73,6 +72,7 @@ extension ExchangeViewController {
     private func configureTableView() {
         tableView.separatorStyle = .none
         tableView.backgroundColor = .white
+        tableView.rowHeight = 40
         tableView.showsVerticalScrollIndicator = false
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.id)
     }

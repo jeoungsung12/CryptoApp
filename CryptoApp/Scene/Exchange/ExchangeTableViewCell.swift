@@ -10,23 +10,26 @@ import SwiftUI
 import SnapKit
 
 final class ExchangeTableViewCell: BaseTableViewCell, ReusableIdentifier {
+    private let stackView = UIStackView()
     private let titleLabel = UILabel()
     private let currentLabel = UILabel()
-    private let percentLabel = UILabel()
-    private let previousLabel = UILabel()
     private let amountLabel = UILabel()
+    private let percentView = PercentPriceView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     }
     
     override func configureView() {
+        stackView.spacing = 0
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .fillEqually
+        
         titleLabel.font = .largeBold
         titleLabel.textAlignment = .left
         
-        previousLabel.font = .smallRegular
-        
-        [currentLabel, percentLabel, amountLabel]
+        [currentLabel, amountLabel]
             .forEach {
                 $0.font = .largeRegular
                 $0.textAlignment = .right
@@ -39,39 +42,18 @@ final class ExchangeTableViewCell: BaseTableViewCell, ReusableIdentifier {
     }
     
     override func configureHierarchy() {
-        [titleLabel, amountLabel, previousLabel, percentLabel, currentLabel]
+        [titleLabel, currentLabel, percentView, amountLabel]
             .forEach {
-                self.contentView.addSubview($0)
+                self.stackView.addArrangedSubview($0)
             }
+        self.contentView.addSubview(stackView)
     }
     
     override func configureLayout() {
-        titleLabel.snp.makeConstraints { make in
-            make.height.equalTo(30)
-            make.leading.equalToSuperview().inset(24)
+        stackView.snp.makeConstraints { make in
+            make.verticalEdges.centerY.equalToSuperview()
+            make.horizontalEdges.equalToSuperview().inset(24)
         }
-        
-        amountLabel.snp.makeConstraints { make in
-            make.height.equalTo(20)
-            make.trailing.verticalEdges.equalToSuperview().inset(24)
-        }
-        
-//        percentLabel.snp.makeConstraints { make in
-//            make.height.equalTo(20)
-//            make.trailing.equalTo(amountLabel.snp.leading).inset(24)
-//        }
-//        
-//        previousLabel.snp.makeConstraints { make in
-//            make.height.equalTo(10)
-//            make.top.equalTo(percentLabel.snp.bottom).offset(4)
-//            make.trailing.equalTo(amountLabel.snp.leading).inset(24)
-//        }
-//        
-//        currentLabel.snp.makeConstraints { make in
-//            make.height.equalTo(20)
-//            make.trailing.equalTo(percentLabel.snp.leading).inset(12)
-//            make.leading.greaterThanOrEqualTo(titleLabel.snp.trailing).offset(12)
-//        }
     }
     
     deinit {
@@ -84,14 +66,10 @@ extension ExchangeTableViewCell {
     
     func configure(_ model: ExchangeEntity) {
         titleLabel.text = model.marketName
-        //TODO: 소숫점 계산
-        currentLabel.text = model.currentPrice.formatted()
-        percentLabel.text = model.changePercent.formatted()
-        previousLabel.text = model.changePrice.formatted()
-        amountLabel.text = model.tradeVolume.formatted()
+        currentLabel.text = model.currentPrice
+        amountLabel.text = model.tradeVolume
         
-        //TODO: 색 계산
-        
+        percentView.configure(model)
     }
     
 }

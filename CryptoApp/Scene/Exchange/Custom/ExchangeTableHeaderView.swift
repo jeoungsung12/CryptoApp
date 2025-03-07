@@ -7,15 +7,49 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class ExchangeTableHeaderView: BaseView {
     private let titleLabel = UILabel()
-    private let currentButton = UpDownButton()
-    private let previousButton = UpDownButton()
-    private let amountButton = UpDownButton()
+    private let stackView = UIStackView()
+    private let currentButton = UpDownButton(alignment: .right)
+    private let previousButton = UpDownButton(alignment: .center)
+    private let amountButton = UpDownButton(alignment: .right)
+    
+    private var disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+    }
+    
+    override func setBinding() {
+        currentButton.rx.tap
+            .asDriver()
+            .drive(with: self, onNext: { owner, _ in
+                owner.currentButton.isSelected.toggle()
+                owner.previousButton.isSelected = false
+                owner.amountButton.isSelected = false
+            })
+            .disposed(by: disposeBag)
+        
+        previousButton.rx.tap
+            .asDriver()
+            .drive(with: self, onNext: { owner, _ in
+                owner.previousButton.isSelected.toggle()
+                owner.currentButton.isSelected = false
+                owner.amountButton.isSelected = false
+            })
+            .disposed(by: disposeBag)
+        
+        amountButton.rx.tap
+            .asDriver()
+            .drive(with: self, onNext: { owner, _ in
+                owner.amountButton.isSelected.toggle()
+                owner.currentButton.isSelected = false
+                owner.previousButton.isSelected = false
+            })
+            .disposed(by: disposeBag)
     }
     
     override func configureView() {
@@ -24,6 +58,12 @@ final class ExchangeTableHeaderView: BaseView {
         titleLabel.text = "코인"
         titleLabel.font = .largeBold
         titleLabel.textColor = .customDarkGray
+        titleLabel.textAlignment = .left
+        
+        stackView.spacing = 0
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .fillEqually
         
         currentButton.configure("현재가")
         previousButton.configure("전일대비")
@@ -31,37 +71,18 @@ final class ExchangeTableHeaderView: BaseView {
     }
     
     override func configureHierarchy() {
-        [titleLabel, amountButton, previousButton, currentButton]
-            .forEach {
-                self.addSubview($0)
-            }
+        [titleLabel, currentButton, previousButton, amountButton].forEach {
+            self.stackView.addArrangedSubview($0)
+        }
+        self.addSubview(stackView)
     }
     
     override func configureLayout() {
-        titleLabel.snp.makeConstraints { make in
-            make.width.equalTo(100)
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().inset(12)
-        }
-        
-        amountButton.snp.makeConstraints { make in
+        stackView.snp.makeConstraints { make in
             make.height.equalTo(26)
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().inset(12)
+            make.horizontalEdges.equalToSuperview().inset(24)
         }
-        
-//        previousButton.snp.makeConstraints { make in
-//            make.height.equalTo(26)
-//            make.centerY.equalToSuperview()
-//            make.trailing.equalTo(amountButton.snp.leading).offset(36)
-//        }
-//        
-//        currentButton.snp.makeConstraints { make in
-//            make.height.equalTo(26)
-//            make.centerY.equalToSuperview()
-//            make.trailing.equalTo(previousButton.snp.leading).inset(12)
-//            make.leading.greaterThanOrEqualTo(titleLabel.snp.trailing).offset(12)
-//        }
     }
     
     deinit {

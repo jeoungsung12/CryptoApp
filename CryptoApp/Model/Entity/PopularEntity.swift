@@ -17,7 +17,7 @@ struct PopularCoinEntity {
     let name: String
     let image: String
     let symbol: String
-    let volumePercent: Double
+    let volumePercent: String
 }
 
 
@@ -38,7 +38,8 @@ extension GeckoPopularResponseDTO {
                 name: $0.item.name,
                 image: $0.item.thumb ?? "이미지 준비중!",
                 symbol: $0.item.symbol,
-                volumePercent: 0.0
+                volumePercent: .doubleToString(0.0)
+                //TODO: 수정
             )
         }
         

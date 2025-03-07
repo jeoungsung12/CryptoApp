@@ -8,5 +8,30 @@
 import Foundation
 
 extension String {
-
+    
+    static func doubleToString(_ num: Double) -> String {
+        if num.isZero { return "0" }
+        if num == Double(Int(num)) {
+            return Int(num).formatted()
+        } else {
+            return String(format: "%.2f", num)
+        }
+    }
+    
+    static func currentToString(_ num: Double) -> String {
+        if num == Double(Int(num)) {
+            return Int(num).formatted()
+        } else {
+            let afterNum = String(format: "%.2f", num)
+            return (afterNum.last == "0") ? String(format: "%.1f", num) : afterNum
+        }
+    }
+    
+    static func amountToString(_ num: Double) -> String {
+        let intNum = Int(num)
+        let numString = Int(num).formatted()
+        let decimal = Int(pow(10.0, 6.0))
+        return ((intNum < (decimal) ? numString : "\((intNum / (decimal)).formatted())백만"))
+    }
+    
 }
