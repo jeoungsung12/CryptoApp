@@ -39,8 +39,14 @@ final class PercentSection: BaseView {
         }
     }
     
-    func configure(_ percent: Double) {
-        //TODO: 퍼센트 구현
+    func configure(_ percent: String, color: UIColor) {
+        percentLabel.text = percent
+        percentLabel.textColor = color
+        arrowImageView.tintColor = color
+        arrowImageView.image = (color == .customRed) ? .arrowUp : .arrowDown
+        if color == .customDarkGray {
+            arrowImageView.isHidden = true
+        }
     }
     
     deinit {

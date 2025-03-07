@@ -5,7 +5,7 @@
 //  Created by 정성윤 on 3/6/25.
 //
 
-import Foundation
+import UIKit
 
 struct PopularEntity {
     let coins: [PopularCoinEntity]
@@ -18,6 +18,7 @@ struct PopularCoinEntity {
     let image: String
     let symbol: String
     let volumePercent: String
+    let color: UIColor
 }
 
 
@@ -27,6 +28,7 @@ struct PopularNftsEntity {
     let image: String
     let volumePercent: String
     let volumePrice: String
+    let color: UIColor
 }
 
 extension GeckoPopularResponseDTO {
@@ -38,8 +40,8 @@ extension GeckoPopularResponseDTO {
                 name: $0.item.name,
                 image: $0.item.thumb ?? "이미지 준비중!",
                 symbol: $0.item.symbol,
-                volumePercent: .doubleToString(0.0)
-                //TODO: 수정
+                volumePercent: .doubleToString($0.item.data.changePercent24th.krw) + "%",
+                color: .stringColor($0.item.data.changePercent24th.krw)
             )
         }
         
@@ -48,8 +50,9 @@ extension GeckoPopularResponseDTO {
                 id: $0.id,
                 name: $0.name,
                 image: $0.thumb ?? "이미지 준비중!",
-                volumePercent: $0.data.floorPrice,
-                volumePrice: $0.data.floorPriceInUsd24HPercentageChange
+                volumePercent: .stringToString($0.data.floorPriceInUsd24HPercentageChange) + "%",
+                volumePrice: $0.data.floorPrice,
+                color: .stringColor(Double($0.data.floorPriceInUsd24HPercentageChange) ?? 0.0)
             )
         }
         

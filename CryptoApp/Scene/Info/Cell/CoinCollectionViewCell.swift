@@ -16,8 +16,7 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
     private let thumbImageView = UIImageView()
     private let titleLabel = UILabel()
     private let subTitleLabel = UILabel()
-    private let arrowImageView = UIImageView()
-    private let percentLabel = UILabel()
+    private let percentSection = PercentSection()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,19 +29,18 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         thumbImageView.contentMode = .scaleToFill
         thumbImageView.clipsToBounds = true
         thumbImageView.backgroundColor = .customGray
-        thumbImageView.layer.cornerRadius = 15
+        thumbImageView.layer.cornerRadius = (13)
         
-        titleLabel.font = .boldSystemFont(ofSize: 15)
+        titleLabel.font = .largeBold
         titleLabel.textColor = .customDarkGray
         
         subTitleLabel.font = .smallRegular
         subTitleLabel.textColor = .customGray
-        
-        arrowImageView.contentMode = .scaleAspectFit
+
     }
     
     override func configureHierarchy() {
-        [rankLabel, thumbImageView, titleLabel, subTitleLabel, percentLabel, arrowImageView]
+        [rankLabel, thumbImageView, titleLabel, subTitleLabel, percentSection]
             .forEach { self.contentView.addSubview($0) }
     }
     
@@ -52,30 +50,27 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         }
         
         thumbImageView.snp.makeConstraints { make in
-            make.size.equalTo(30)
-            make.verticalEdges.equalToSuperview()
+            make.size.equalTo(26)
+            make.centerY.equalToSuperview()
             make.leading.equalTo(rankLabel.snp.trailing).offset(12)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalTo(thumbImageView.snp.top)
             make.leading.equalTo(thumbImageView.snp.trailing).offset(8)
         }
         
         subTitleLabel.snp.makeConstraints { make in
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(thumbImageView.snp.bottom)
             make.top.greaterThanOrEqualTo(titleLabel.snp.bottom).offset(4)
             make.leading.equalTo(thumbImageView.snp.trailing).offset(8)
         }
         
-        //TODO: Layout
-        percentLabel.snp.makeConstraints { make in
-            
+        percentSection.snp.makeConstraints { make in
+            make.centerY.trailing.equalToSuperview()
+            make.leading.greaterThanOrEqualTo(subTitleLabel.snp.leading).offset(4)
         }
-        
-        arrowImageView.snp.makeConstraints { make in
-            
-        }
+        //TODO: 우선순위
     }
     
     func configure(_ model: PopularCoinEntity,_ items: Int) {
@@ -89,7 +84,7 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         } else {
             //TODO: 예외처리
         }
-        
+        percentSection.configure(model.volumePercent, color: model.color)
     }
     
 }

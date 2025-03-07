@@ -18,6 +18,16 @@ extension String {
         }
     }
     
+    static func stringToString(_ num: String) -> String {
+        guard let num = Double(num) else { return "" }
+        if num.isZero { return "0" }
+        if num == Double(Int(num)) {
+            return Int(num).formatted()
+        } else {
+            return String(format: "%.2f", num)
+        }
+    }
+    
     static func currentToString(_ num: Double) -> String {
         if num == Double(Int(num)) {
             return Int(num).formatted()

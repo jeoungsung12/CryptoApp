@@ -43,7 +43,7 @@ struct PopularCoinsDTO: Decodable {
     }
 
     struct PopularChangePercent: Decodable {
-        
+        let krw: Double
     }
 }
 

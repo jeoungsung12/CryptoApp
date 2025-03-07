@@ -123,7 +123,7 @@ final class InfoViewController: BaseViewController {
         
         coinCollectionView.snp.makeConstraints { make in
             make.height.equalToSuperview().dividedBy(3)
-            make.horizontalEdges.equalToSuperview().inset(24)
+            make.horizontalEdges.equalToSuperview()
             make.top.equalTo(coinSectionLabel.snp.bottom).offset(24)
         }
         
@@ -170,7 +170,7 @@ extension InfoViewController {
             layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
             
         case .popularNFT:
-            layout.itemSize = CGSize(width: 70, height: 150)
+            layout.itemSize = CGSize(width: 72, height: 150)
             layout.minimumLineSpacing = 12
             layout.minimumInteritemSpacing = 12
             layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)

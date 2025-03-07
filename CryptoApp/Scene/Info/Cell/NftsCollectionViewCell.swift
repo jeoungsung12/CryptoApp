@@ -15,8 +15,7 @@ final class NftsCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
     private let thumbImageView = UIImageView()
     private let titleLabel = UILabel()
     private let subTitleLabel = UILabel()
-    private let arrowImageView = UIImageView()
-    private let percentLabel = UILabel()
+    private let percentSection = PercentSection()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,25 +27,23 @@ final class NftsCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         thumbImageView.backgroundColor = .customGray
         thumbImageView.layer.cornerRadius = 20
         
-        titleLabel.font = .largeBold
+        titleLabel.font = .smallBold
         titleLabel.textAlignment = .center
         titleLabel.textColor = .customDarkGray
         
         subTitleLabel.font = .smallRegular
         subTitleLabel.textAlignment = .center
         subTitleLabel.textColor = .customGray
-        
-        arrowImageView.contentMode = .scaleAspectFit
     }
     
     override func configureHierarchy() {
-        [thumbImageView, titleLabel, subTitleLabel, arrowImageView, percentLabel]
+        [thumbImageView, titleLabel, subTitleLabel, percentSection]
             .forEach { self.contentView.addSubview($0) }
     }
     
     override func configureLayout() {
         thumbImageView.snp.makeConstraints { make in
-            make.size.equalTo(70)
+            make.size.equalTo(72)
             make.horizontalEdges.equalToSuperview()
             make.top.horizontalEdges.equalToSuperview()
         }
@@ -61,14 +58,11 @@ final class NftsCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
             make.horizontalEdges.equalToSuperview()
         }
         
-        arrowImageView.snp.makeConstraints { make in
-            
+        percentSection.snp.makeConstraints { make in
+            make.horizontalEdges.equalToSuperview()
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(4)
+            make.bottom.lessThanOrEqualToSuperview().inset(4)
         }
-        
-        percentLabel.snp.makeConstraints { make in
-            
-        }
-        
     }
     
     func configure(_ model: PopularNftsEntity) {
@@ -80,8 +74,7 @@ final class NftsCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         } else {
             //TODO: 예외처리
         }
-        
-        //TODO: Percent
+        percentSection.configure(model.volumePercent, color: model.color)
     }
     
 }
