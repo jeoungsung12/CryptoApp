@@ -16,7 +16,7 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
     private let titleLabel = UILabel()
     private let subTitleLabel = UILabel()
     private let rankLabel = UILabel()
-    private let starbutton = UIButton()
+    let starbutton = UIButton()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -85,9 +85,7 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
     func configure(_ model: SearchEntity) {
         titleLabel.text = model.symbol
         subTitleLabel.text = model.name
-        //TODO: Int -> String
         rankLabel.text = " #\(model.rank) "
-        starbutton.setImage(.star, for: .normal)
         
         if let url = URL(string: model.thumb) {
             thumbImageView.kf.setImage(with: url)

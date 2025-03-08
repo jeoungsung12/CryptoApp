@@ -31,16 +31,18 @@ extension DetailSection: SectionModelType {
 }
 
 final class CoinDetailViewModel: BaseViewModel {
+    private let realmRepository: RealmRepositoryType = RealmRepository()
     private let service = GeckoService()
     private var disposeBag = DisposeBag()
     
     var coinId: String
     struct Input {
+        let starTrigger: ControlEvent<Void>
         let reloadTrigger: PublishRelay<Void>
-        let starTrigger: PublishRelay<Void>
     }
     
     struct Output {
+        let starBtnResult: Driver<RealmEntity>
         let detailResult: Driver<GeckoDetailEntity?>
     }
     
@@ -59,6 +61,23 @@ extension CoinDetailViewModel {
     
     func transform(_ input: Input) -> Output {
         let detailResult: BehaviorRelay<GeckoDetailEntity?> = BehaviorRelay(value: nil)
+        let starBtnResult: BehaviorRelay<RealmEntity> = BehaviorRelay(value: RealmEntity(bool: realmRepository.getState(coinId), message: ""))
+        
+        input.starTrigger
+            .withLatestFrom(starBtnResult)
+            .map { $0.bool }
+            .bind(with: self) { owner, bool in
+                let result = (bool) ? owner.realmRepository.deleteItem(owner.coinId) : owner.realmRepository.addItem(owner.coinId)
+                switch result {
+                case .add:
+                    starBtnResult.accept(RealmEntity(bool: true, message: result.description))
+                case .delete:
+                    starBtnResult.accept(RealmEntity(bool: false, message: result.description))
+                case .error:
+                    starBtnResult.accept(RealmEntity(bool: bool, message: result.description))
+                }
+            }
+            .disposed(by: disposeBag)
         
         input.reloadTrigger
             .withUnretained(self)
@@ -74,6 +93,7 @@ extension CoinDetailViewModel {
             .disposed(by: disposeBag)
         
         return Output(
+            starBtnResult: starBtnResult.asDriver(),
             detailResult: detailResult.asDriver()
         )
     }

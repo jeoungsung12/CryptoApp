@@ -8,6 +8,7 @@
 import UIKit
 import Kingfisher
 import SnapKit
+import Toast
 import RxSwift
 import RxCocoa
 import RxDataSources
@@ -35,11 +36,20 @@ final class CoinDetailViewController: BaseViewController {
     
     override func setBinding() {
         let input = CoinDetailViewModel.Input(
-            reloadTrigger: PublishRelay(),
-            starTrigger: PublishRelay()
+            starTrigger: starButton.rx.tap,
+            reloadTrigger: PublishRelay()
         )
         let output = viewModel.transform(input)
         input.reloadTrigger.accept(())
+        
+        output.starBtnResult
+            .drive(with: self) { owner, entity in
+                owner.starButton.image = (entity.bool) ? .starFill : .star
+                if !entity.message.isEmpty {
+                    owner.view.makeToast(entity.message, duration: 1, position: .center)
+                }
+            }
+            .disposed(by: disposeBag)
         
         let dataSource = RxTableViewSectionedReloadDataSource<DetailSection> { dataSource, tableView, indexPath, item in
             switch item {

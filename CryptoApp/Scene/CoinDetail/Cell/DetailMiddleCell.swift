@@ -30,7 +30,7 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
     override func setBinding() {
         moreBtn.rx.tap.asDriver()
             .drive(with: self) { owner, _ in
-                self.contentView.makeToast("준비 중입니다.", duration: 1.0, position: .bottom)
+                self.contentView.makeToast("준비 중입니다.", duration: 1.0, position: .center)
             }
             .disposed(by: disposeBag)
     }

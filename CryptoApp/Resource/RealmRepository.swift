@@ -8,6 +8,28 @@
 import Foundation
 import RealmSwift
 
+struct RealmEntity {
+    var bool: Bool
+    var message: String
+    
+    enum RealmType {
+        case add
+        case delete
+        case error
+        
+        var description: String {
+            switch self {
+            case .add:
+                "즐겨찾기에 추가 되었습니다"
+            case .delete:
+                "즐겨찾기에 삭제 되었습니다"
+            case .error:
+                "실패! 잠시후 다시 시도해 보세요"
+            }
+        }
+    }
+}
+
 final class CoinData: Object {
     @Persisted(primaryKey: true)
     var id: String
@@ -19,38 +41,36 @@ final class CoinData: Object {
 }
 
 protocol RealmRepositoryType {
-    func addItem(_ id: String) -> Bool
-    func deleteItem(_ id: String) -> Bool
+    func addItem(_ id: String) -> RealmEntity.RealmType
+    func deleteItem(_ id: String) -> RealmEntity.RealmType
     func getState(_ id: String) -> Bool
 }
 
 final class RealmRepository: RealmRepositoryType {
     private var realm = try! Realm()
     
-    func addItem(_ id: String) -> Bool {
+    func addItem(_ id: String) -> RealmEntity.RealmType {
         do {
             try realm.write {
                 let object = CoinData(id: id)
                 realm.add(object)
             }
-            return true
+            return .add
         } catch {
-            print("즐겨찾기 등록 실패!")
-            return false
+            return .error
         }
     }
     
-    func deleteItem(_ id: String) -> Bool {
+    func deleteItem(_ id: String) -> RealmEntity.RealmType {
         do {
             try realm.write {
                 if let data = realm.object(ofType: CoinData.self, forPrimaryKey: id) {
                     realm.delete(data)
                 }
             }
-            return true
+            return .delete
         } catch {
-            print("즐겨찾기 삭제 실패!")
-            return false
+            return .error
         }
     }
     

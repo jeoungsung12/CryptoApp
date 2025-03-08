@@ -28,7 +28,7 @@ final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
     override func setBinding() {
         moreBtn.rx.tap.asDriver()
             .drive(with: self) { owner, _ in
-                self.contentView.makeToast("준비 중입니다.", duration: 1.0, position: .top)
+                self.contentView.makeToast("준비 중입니다.", duration: 1.0, position: .center)
             }
             .disposed(by: disposeBag)
     }
