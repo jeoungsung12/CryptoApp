@@ -17,16 +17,27 @@ final class ExchangeViewController: BaseViewController {
     
     private let viewModel = ExchangeViewModel()
     private var disposeBag = DisposeBag()
+    private let input = ExchangeViewModel.Input(
+        typeTrigger: PublishRelay(),
+        reloadTrigger: BehaviorRelay(value: ExchangeButtonEntity(type: .amount, state: .none))
+    )
+    private var timerDispose: Disposable?
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setTimer()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        timerDispose?.dispose()
+    }
+    
     override func setBinding() {
-        let input = ExchangeViewModel.Input(
-            typeTrigger: PublishRelay(),
-            reloadTrigger: BehaviorRelay(value: ExchangeButtonEntity(type: .amount, state: .none))
-        )
         let output = viewModel.transform(input)
         
         headerButtons.forEach { button in
@@ -35,27 +46,29 @@ final class ExchangeViewController: BaseViewController {
                 .drive(with: self) { owner, _ in
                     owner.toggleButton(button)
                     let type = button.type
-                    input.reloadTrigger.accept(ExchangeButtonEntity(type: type.configureButtonType(button.tag), state: type))
+                    
+                    owner.input.reloadTrigger.accept(ExchangeButtonEntity(type: type.configureButtonType(button.tag), state: type))
                     
                     let states = owner.headerButtons.map { $0.type }
-                    input.typeTrigger.accept(states)
+                    owner.input.typeTrigger.accept(states)
                 }
                 .disposed(by: disposeBag)
         }
-        
-        Observable<Int>.interval(.seconds(5), scheduler: MainScheduler.instance)
-            .withLatestFrom(input.reloadTrigger)
-            .bind(with: self) { owner, entity in
-                let states = owner.headerButtons.map { $0.type }
-                owner.viewModel.timerExchange(states, entity, input)
-            }
-            .disposed(by: disposeBag)
         
         output.coinResult
             .drive(tableView.rx.items(cellIdentifier: ExchangeTableViewCell.id, cellType: ExchangeTableViewCell.self)) { row, element, cell in
                 cell.configure(element)
             }
             .disposed(by: disposeBag)
+    }
+    
+    private func setTimer() {
+        timerDispose = Observable<Int>.interval(.seconds(5), scheduler: MainScheduler.instance)
+            .withLatestFrom(input.reloadTrigger)
+            .bind(with: self) { owner, entity in
+                let states = owner.headerButtons.map { $0.type }
+                owner.viewModel.timerExchange(states, entity, owner.input)
+            }
     }
     
     override func configureView() {
