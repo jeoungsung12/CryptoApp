@@ -104,4 +104,13 @@ extension ExchangeViewModel {
         }
     }
     
+    func timerExchange(_ states: [ExchangeButtonEntity.ExchangeButtonState], _ entity: ExchangeButtonEntity,_ input: ExchangeViewModel.Input) {
+        print(#function)
+        if states.allSatisfy({ $0 == .none }) {
+            input.reloadTrigger.accept(ExchangeButtonEntity(type: .amount, state: .none))
+        } else {
+            input.reloadTrigger.accept(ExchangeButtonEntity(type: entity.type, state: entity.state))
+        }
+    }
+    
 }
