@@ -9,11 +9,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-enum Section {
-    case header
-    case footer
-}
-
 enum Item {
     case popularSearch
     case popularNFT
@@ -67,4 +62,9 @@ extension InfoViewModel {
         )
     }
     
+    func isValidSearchText(_ text: String?) -> String? {
+        guard var text = text else { return nil }
+        text.removeAll { $0 == " " }
+        return (text.count >= 1) ? text : nil
+    }
 }

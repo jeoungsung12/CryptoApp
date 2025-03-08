@@ -19,7 +19,7 @@ final class CustomSearchBar: BaseView {
         super.init(frame: frame)
         self.clipsToBounds = true
         self.backgroundColor = .white
-        self.layer.cornerRadius = 20
+        self.layer.cornerRadius = 22
         self.layer.borderWidth = 1
         self.layer.borderColor = UIColor.customGray.cgColor
     }

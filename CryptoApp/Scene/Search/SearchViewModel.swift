@@ -13,6 +13,7 @@ final class SearchViewModel: BaseViewModel {
     private let service = GeckoService()
     private var disposeBag = DisposeBag()
     
+    var coinName: String
     struct Input {
         let searchTrigger: PublishRelay<String>
     }
@@ -21,7 +22,8 @@ final class SearchViewModel: BaseViewModel {
         let searchResult: Driver<[SearchEntity]>
     }
     
-    init() {
+    init(coinName: String) {
+        self.coinName = coinName
         print(#function, self)
     }
     

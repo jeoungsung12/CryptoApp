@@ -14,8 +14,18 @@ final class SearchViewController: BaseViewController {
     private let categoryView = SearchCategoryView()
     private let tableView = UITableView()
     
-    private let viewModel = SearchViewModel()
+    private let viewModel: SearchViewModel
     private var disposeBag = DisposeBag()
+    
+    init(viewModel: SearchViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @MainActor
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +36,7 @@ final class SearchViewController: BaseViewController {
             searchTrigger: PublishRelay()
         )
         let output = viewModel.transform(input)
-        input.searchTrigger.accept("Bitcoin")
+        input.searchTrigger.accept(viewModel.coinName)
         
         output.searchResult
             .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { row, element, cell in

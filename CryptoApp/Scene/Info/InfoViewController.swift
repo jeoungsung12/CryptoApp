@@ -9,10 +9,11 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import Toast
 import NVActivityIndicatorView
 
 final class InfoViewController: BaseViewController {
-    private let loadingIndicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: 40, height: 40)), type: .ballGridBeat, color: .customDarkGray)
+    private let loadingIndicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: 40, height: 40)), type: .ballPulseSync, color: .customDarkGray)
     private lazy var coinCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout(.popularSearch))
     private lazy var nftsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: self.createLayout(.popularNFT))
     private let searchBar = CustomSearchBar()
@@ -22,7 +23,6 @@ final class InfoViewController: BaseViewController {
     
     private let viewModel = InfoViewModel()
     private var disposeBag = DisposeBag()
-    private var dataSource: UICollectionViewDiffableDataSource<Section,Item>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,11 +68,18 @@ final class InfoViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         searchBar.searchButton.rx.tap
-            .observe(on: MainScheduler.instance)
-            .bind(with: self) { owner, text in
-                //TODO: 텍스트 예외처리
-//                guard let text = owner.searchBar.searchTextField.text else { return }
-                let vc = SearchViewController()
+            .withUnretained(self)
+            .map { owner, _ in
+                owner.viewModel.isValidSearchText(owner.searchBar.searchTextField.text)
+            }
+            .asDriver(onErrorJustReturn: nil )
+            .drive(with: self) { owner, text in
+                guard let text = text else {
+                    owner.view.makeToast("한 글자 이상의 검색어를 입력하세요!", duration: 1, position: .center)
+                    return
+                }
+                let vm = SearchViewModel(coinName: text)
+                let vc = SearchViewController(viewModel: vm)
                 owner.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
