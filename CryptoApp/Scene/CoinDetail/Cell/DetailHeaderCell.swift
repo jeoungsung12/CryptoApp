@@ -37,18 +37,19 @@ final class DetailHeaderCell: BaseTableViewCell, ReusableIdentifier {
     
     override func configureLayout() {
         priceLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(-12)
-            make.horizontalEdges.equalToSuperview().inset(24)
+            make.height.equalTo(40)
+            make.top.horizontalEdges.equalToSuperview().inset(24)
         }
         
         percentSection.snp.makeConstraints { make in
-            make.top.equalTo(priceLabel.snp.bottom).offset(8)
-            make.leading.equalToSuperview().inset(24)
+            make.height.equalTo(20)
+            make.top.equalTo(priceLabel.snp.bottom)
+            make.horizontalEdges.equalToSuperview().inset(24)
         }
         
         chartView.view.snp.makeConstraints { make in
-            make.height.equalToSuperview().dividedBy(3)
-            make.top.equalTo(priceLabel.snp.bottom).offset(24)
+            make.height.equalTo(200)
+            make.top.equalTo(percentSection.snp.bottom).offset(36)
             make.horizontalEdges.equalToSuperview().inset(24)
         }
         
@@ -60,20 +61,13 @@ final class DetailHeaderCell: BaseTableViewCell, ReusableIdentifier {
     
     func configure(_ model: DetailHeaderEntity) {
         priceLabel.text = "₩" + model.price
-        //TODO: arrow 이미지 및 퍼센트
         //TODO: update format
         updateLabel.text = model.lastUpdated
         
-        //TODO: 이게 최선?
         chartView = CoinChartHostingView(rootView: CoinChartView(chartData: model.chartData))
         chartView.view.removeFromSuperview()
         self.contentView.addSubview(chartView.view)
-
-        chartView.view.snp.makeConstraints { make in
-            make.height.equalToSuperview().dividedBy(3)
-            make.top.equalTo(priceLabel.snp.bottom).offset(24)
-            make.horizontalEdges.equalToSuperview().inset(24)
-        }
+        configureLayout()
         
         percentSection.configure(model.percent, color: model.color)
     }

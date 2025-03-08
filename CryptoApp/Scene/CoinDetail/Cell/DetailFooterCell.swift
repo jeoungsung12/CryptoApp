@@ -11,6 +11,7 @@ import SnapKit
 final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
     private let titleLabel = UILabel()
     private let moreBtn = MoreButton()
+    private let containerView = UIView()
     private let priceContainerView = UIStackView()
     private let marketPriceSection = DetailSectionView()
     private let fdvSection = DetailSectionView()
@@ -26,9 +27,10 @@ final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
         titleLabel.textAlignment = .left
         titleLabel.font = .boldSystemFont(ofSize: 17)
         
-        priceContainerView.backgroundColor = .customLightGray
-        priceContainerView.clipsToBounds = true
-        priceContainerView.layer.cornerRadius = 15
+        containerView.backgroundColor = .customLightGray
+        containerView.clipsToBounds = true
+        containerView.layer.cornerRadius = 15
+        
         priceContainerView.axis = .vertical
         priceContainerView.spacing = 12
         priceContainerView.distribution = .fillEqually
@@ -39,23 +41,30 @@ final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
         [marketPriceSection, fdvSection, amountSection].forEach {
             self.priceContainerView.addArrangedSubview($0)
         }
-        [titleLabel, moreBtn, priceContainerView].forEach { self.contentView.addSubview($0) }
+        containerView.addSubview(priceContainerView)
+        [titleLabel, moreBtn, containerView].forEach { self.contentView.addSubview($0) }
     }
     
     override func configureLayout() {
         titleLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(24)
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview().inset(24)
         }
         
         moreBtn.snp.makeConstraints { make in
-            make.leading.greaterThanOrEqualToSuperview().offset(4)
-            make.verticalEdges.trailing.equalToSuperview().inset(24)
+            make.top.equalToSuperview()
+            make.trailing.equalToSuperview().inset(24)
+            make.leading.greaterThanOrEqualTo(titleLabel.snp.trailing).offset(4)
         }
         
-        priceContainerView.snp.makeConstraints { make in
+        containerView.snp.makeConstraints { make in
             make.height.equalTo(200)
             make.top.equalTo(titleLabel.snp.bottom).offset(24)
             make.horizontalEdges.bottom.equalToSuperview().inset(24)
+        }
+        
+        priceContainerView.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(24)
         }
     }
     

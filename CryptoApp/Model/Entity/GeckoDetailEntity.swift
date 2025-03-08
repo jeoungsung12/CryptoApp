@@ -39,10 +39,10 @@ struct GeckoDetailEntity {
     
     func toMiddleEntity() -> DetailMiddleEntity {
         return DetailMiddleEntity(
-            high24: .doubleToString(high24),
-            low24: .doubleToString(low24),
-            allTimeHigh: .doubleToString(allTimeHigh),
-            allTimeLow: .doubleToString(allTimeLow),
+            high24: "₩" + .doubleToString(high24),
+            low24: "₩" + .doubleToString(low24),
+            allTimeHigh: "₩" + .doubleToString(allTimeHigh),
+            allTimeLow: "₩" + .doubleToString(allTimeLow),
             highDate: highDate,
             lowDate: lowDate
         )

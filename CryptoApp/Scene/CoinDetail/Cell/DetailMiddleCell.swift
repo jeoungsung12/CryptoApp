@@ -16,12 +16,8 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
     private let historyContainerView = UIStackView()
     private let high24Section = DetailSectionView()
     private let low24Section = DetailSectionView()
-    
-    //TODO: Date 설정
-    private let highSection = DetailSectionView()
-    private let highDateLabel = UILabel()
-    private let lowSection = DetailSectionView()
-    private let lowDateLabel = UILabel()
+    private let athSection = ATPriceView()
+    private let atlSection = ATPriceView()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -41,13 +37,7 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
             $0.axis = .horizontal
             $0.spacing = 0
             $0.distribution = .fillEqually
-            $0.alignment = .center
-        }
-        
-        [highDateLabel, lowDateLabel].forEach {
-            $0.font = .smallRegular
-            $0.textColor = .customGray
-            $0.textAlignment = .left
+            $0.alignment = .fill
         }
         
     }
@@ -56,7 +46,7 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
         [high24Section, low24Section].forEach {
             self.priceContainerView.addArrangedSubview($0)
         }
-        [highSection, lowSection].forEach {
+        [athSection, atlSection].forEach {
             self.historyContainerView.addArrangedSubview($0)
         }
         [priceContainerView, historyContainerView].forEach {
@@ -67,36 +57,42 @@ final class DetailMiddleCell: BaseTableViewCell, ReusableIdentifier {
     
     override func configureLayout() {
         titleLabel.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().inset(24)
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview().inset(24)
         }
         
         moreBtn.snp.makeConstraints { make in
-            make.leading.greaterThanOrEqualToSuperview().offset(4)
-            make.verticalEdges.trailing.equalToSuperview().inset(24)
+            make.top.equalToSuperview()
+            make.trailing.equalToSuperview().inset(24)
+            make.leading.greaterThanOrEqualTo(titleLabel.snp.trailing).offset(4)
         }
         
         containerView.snp.makeConstraints { make in
-            make.height.equalTo(200)
+            make.height.equalTo(150)
             make.top.equalTo(titleLabel.snp.bottom).offset(24)
             make.horizontalEdges.bottom.equalToSuperview().inset(24)
         }
         
         priceContainerView.snp.makeConstraints { make in
-            make.top.horizontalEdges.equalToSuperview()
-            make.height.equalToSuperview().dividedBy(2)
+            make.height.equalTo(50)
+            make.top.equalToSuperview().offset(24)
+            make.horizontalEdges.equalToSuperview().inset(24)
         }
         
         historyContainerView.snp.makeConstraints { make in
-            make.bottom.horizontalEdges.equalToSuperview()
-            make.height.equalToSuperview().dividedBy(2)
+            make.height.equalTo(50)
+            make.bottom.equalToSuperview().inset(12)
+            make.horizontalEdges.equalToSuperview().inset(24)
+            make.top.greaterThanOrEqualTo(priceContainerView.snp.bottom).offset(12)
         }
     }
     
     func configure(_ model: DetailMiddleEntity) {
         high24Section.configure("24시간 고가", model.high24)
-        highSection.configure("역대 최고가", model.allTimeHigh)
         low24Section.configure("24시간 저가", model.low24)
-        lowSection.configure("역대 최저가", model.allTimeLow)
+        
+        athSection.configure("역대 최고가", model.allTimeHigh, model.highDate)
+        atlSection.configure("역대 최저가", model.allTimeLow, model.lowDate)
     }
     
 }

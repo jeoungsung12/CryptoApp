@@ -19,7 +19,7 @@ final class MoreButton: BaseButton {
     override func configureView() {
         buttonLabel.textColor = .customGray
         buttonLabel.text = "더보기"
-        buttonLabel.font = .systemFont(ofSize: 17, weight: .regular)
+        buttonLabel.font = .systemFont(ofSize: 15, weight: .regular)
         buttonLabel.textAlignment = .right
         
         arrowImage.image = .arrowRight
@@ -37,7 +37,7 @@ final class MoreButton: BaseButton {
         }
         
         arrowImage.snp.makeConstraints { make in
-            make.size.equalTo(30)
+            make.size.equalTo(15)
             make.verticalEdges.trailing.equalToSuperview()
             make.leading.equalTo(buttonLabel.snp.trailing).offset(8)
         }

@@ -29,7 +29,7 @@ final class DetailPercentSection: BaseView {
     
     override func configureLayout() {
         arrowImageView.snp.makeConstraints { make in
-            make.size.equalTo(20)
+            make.size.equalTo(15)
             make.verticalEdges.leading.equalToSuperview()
         }
         
