@@ -30,7 +30,6 @@ extension DetailSection: SectionModelType {
     }
 }
 
-
 final class CoinDetailViewModel: BaseViewModel {
     private let service = GeckoService()
     private var disposeBag = DisposeBag()

@@ -20,10 +20,10 @@ extension UpbitResponseDTO {
     func toEntity() -> ExchangeEntity {
         return ExchangeEntity(
             marketName: .splitReplaceString(market),
-            currentPrice: .currentToString(tradePrice),
-            tradeVolume: .amountToString(accTradePrice24H),
-            changePrice: .doubleToString(signedChangePrice),
-            changePercent: .doubleToString(signedChangeRate * 100) + "%",
+            currentPrice: .convertNumber(.currentPrice, value: tradePrice),
+            tradeVolume: .convertNumber(.tradeVolume, value: accTradePrice24H),
+            changePrice: .convertNumber(.dToS, value: signedChangePrice),
+            changePercent: .convertNumber(.dToS, value: signedChangeRate * 100) + "%",
             color: .stringColor(signedChangeRate)
         )
     }

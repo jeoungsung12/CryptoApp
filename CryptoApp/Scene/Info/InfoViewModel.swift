@@ -19,7 +19,8 @@ final class InfoViewModel: BaseViewModel {
     private var disposeBag = DisposeBag()
     
     struct Input {
-        let reloadTrigger: PublishRelay<Void>
+        let timerTrigger: PublishRelay<Void>
+        let reloadTrigger: BehaviorRelay<Void>
     }
     
     struct Output {
@@ -74,8 +75,12 @@ extension InfoViewModel {
     
     func checkTimer(_ previousTime: Date, _ input: Input) {
         let difference = Calendar.current.dateComponents([.minute], from: previousTime, to: Date())
-        if let minute = difference.minute, minute >= 10 {
+        if let second = difference.second, second >= 5 {
+            print(#function, previousTime, Date())
             input.reloadTrigger.accept(())
+            input.timerTrigger.accept(())
         } else { return }
     }
+    
+    
 }

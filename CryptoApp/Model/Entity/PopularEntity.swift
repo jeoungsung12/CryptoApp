@@ -40,7 +40,7 @@ extension GeckoPopularResponseDTO {
                 name: $0.item.name,
                 image: $0.item.thumb ?? "이미지 준비중!",
                 symbol: $0.item.symbol,
-                volumePercent: .doubleToString($0.item.data.changePercent24th.krw) + "%",
+                volumePercent: .convertNumber(.dToS, value: $0.item.data.changePercent24th.krw) + "%",
                 color: .stringColor($0.item.data.changePercent24th.krw)
             )
         }
@@ -50,7 +50,7 @@ extension GeckoPopularResponseDTO {
                 id: $0.id,
                 name: $0.name,
                 image: $0.thumb ?? "이미지 준비중!",
-                volumePercent: .stringToString($0.data.floorPriceInUsd24HPercentageChange) + "%",
+                volumePercent: .convertNumber(.sToS, value: $0.data.floorPriceInUsd24HPercentageChange) + "%",
                 volumePrice: $0.data.floorPrice,
                 color: .stringColor(Double($0.data.floorPriceInUsd24HPercentageChange) ?? 0.0)
             )

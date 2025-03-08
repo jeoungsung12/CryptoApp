@@ -89,6 +89,7 @@ final class SearchViewController: BaseViewController {
     }
     
     override func configureView() {
+        self.setNavigation()
         self.navigationItem.titleView = searchTextField
         searchTextField.text = viewModel.coinName
         searchTextField.textAlignment = .left

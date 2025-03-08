@@ -8,6 +8,7 @@
 import UIKit
 
 struct GeckoDetailEntity {
+    //header
     let id: String
     let name: String
     let image: String
@@ -15,44 +16,44 @@ struct GeckoDetailEntity {
     let percent: Double
     let chartData: [Double]
     let lastUpdated: String
-    
+    //middle
     let high24: Double
     let low24: Double
     let allTimeHigh: Double
     let allTimeLow: Double
     let highDate: String
     let lowDate: String
-    
+    //footer
     let marketCap: Double
     let fdvValue: Double
     let volume: Double
     
     func toHeaderEntity() -> DetailHeaderEntity {
         return DetailHeaderEntity(
-            price: .doubleToString(price),
-            percent: .doubleToString(percent) + "%",
+            price: .convertNumber(.dToS, value: price),
+            percent: .convertNumber(.dToS, value: percent) + "%",
             chartData: chartData,
-            lastUpdated: lastUpdated,
+            lastUpdated: .dateToString(.detailChart, dateString: lastUpdated),
             color: .stringColor(percent)
         )
     }
     
     func toMiddleEntity() -> DetailMiddleEntity {
         return DetailMiddleEntity(
-            high24: "₩" + .doubleToString(high24),
-            low24: "₩" + .doubleToString(low24),
-            allTimeHigh: "₩" + .doubleToString(allTimeHigh),
-            allTimeLow: "₩" + .doubleToString(allTimeLow),
-            highDate: highDate,
-            lowDate: lowDate
+            high24: "₩" + .convertNumber(.dToS, value: high24),
+            low24: "₩" + .convertNumber(.dToS, value: low24),
+            allTimeHigh: "₩" + .convertNumber(.dToS, value: allTimeHigh),
+            allTimeLow: "₩" + .convertNumber(.dToS, value: allTimeLow),
+            highDate: .dateToString(.detailATD, dateString: highDate),
+            lowDate: .dateToString(.detailATD, dateString: lowDate)
         )
     }
     
     func toFooterEntity() -> DetailFooterEntity {
         return DetailFooterEntity(
-            marketCap: .doubleToString(marketCap),
-            fdvValue: .doubleToString(fdvValue),
-            volume: .doubleToString(volume)
+            marketCap: .convertNumber(.dToS, value: marketCap),
+            fdvValue: .convertNumber(.dToS, value: fdvValue),
+            volume: .convertNumber(.dToS, value: volume)
         )
     }
 }

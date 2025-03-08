@@ -22,7 +22,13 @@ final class InfoViewController: BaseViewController {
     private let timeStampLabel = UILabel()
     
     private let viewModel = InfoViewModel()
+    private let input = InfoViewModel.Input(
+        timerTrigger: PublishRelay(),
+        reloadTrigger: BehaviorRelay(value: ())
+    )
+    private lazy var output = viewModel.transform(input)
     private var disposeBag = DisposeBag()
+    private var timerDispose: Disposable?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,15 +36,16 @@ final class InfoViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //        viewModel.checkTimer(output.timeStamp.value, input)
+        viewModel.checkTimer(output.timeStamp.value, input)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        timerDispose?.dispose()
     }
     
     override func setBinding() {
-        let input = InfoViewModel.Input(
-            reloadTrigger: PublishRelay()
-        )
-        let output = viewModel.transform(input)
-        input.reloadTrigger.accept(())
+        setTimer()
         
         input.reloadTrigger
             .asDriver(onErrorJustReturn: ())
@@ -47,14 +54,13 @@ final class InfoViewController: BaseViewController {
             })
             .disposed(by: disposeBag)
         
-        Observable<Int>.timer(.seconds(600), scheduler: MainScheduler.instance)
-            .observe(on: MainScheduler.instance)
-            .bind(with: self) { owner, _ in
-                owner.viewModel.checkTimer(output.timeStamp.value, input)
+        input.timerTrigger
+            .asDriver(onErrorJustReturn: ())
+            .drive(with: self) { owner, _ in
+                owner.setTimer()
             }
             .disposed(by: disposeBag)
         
-        //TODO: 어떨때되고 어떨때는안됨.
         Observable.merge(
             searchBar.searchTextField.rx.controlEvent(.editingDidEndOnExit).map { _ in () },
             searchBar.searchButton.rx.tap.map { _ in () }
@@ -89,8 +95,8 @@ final class InfoViewController: BaseViewController {
         output.timeStamp
             .observe(on: MainScheduler.instance)
             .bind(with: self) { owner, time in
-                //                owner.loadingIndicator.stopAnimating()
-                owner.timeStampLabel.text = .dateToString(time)
+                owner.loadingIndicator.stopAnimating()
+                owner.timeStampLabel.text = .dateToString(.info, date: time)
             }
             .disposed(by: disposeBag)
         
@@ -207,6 +213,13 @@ extension InfoViewController {
             layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
         }
         return layout
+    }
+    
+    private func setTimer() {
+        timerDispose = Observable<Int>.interval(.seconds(5), scheduler: MainScheduler.instance)
+            .bind(with: self) { owner, _ in
+                owner.input.reloadTrigger.accept(())
+            }
     }
     
 }

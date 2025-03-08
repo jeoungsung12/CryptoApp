@@ -7,6 +7,9 @@
 
 import UIKit
 import SnapKit
+import Toast
+import RxSwift
+import RxCocoa
 
 final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
     private let titleLabel = UILabel()
@@ -16,9 +19,18 @@ final class DetailFooterCell: BaseTableViewCell, ReusableIdentifier {
     private let marketPriceSection = DetailSectionView()
     private let fdvSection = DetailSectionView()
     private let amountSection = DetailSectionView()
+    private var disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+    
+    override func setBinding() {
+        moreBtn.rx.tap.asDriver()
+            .drive(with: self) { owner, _ in
+                self.contentView.makeToast("준비 중입니다.", duration: 1.0, position: .top)
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureView() {
