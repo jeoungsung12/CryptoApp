@@ -48,23 +48,23 @@ final class UpDownButton: BaseButton {
         [arrowUp, arrowDown].forEach {
             self.stackView.addArrangedSubview($0)
         }
-        [nameLabel, stackView].forEach {
+        [stackView, nameLabel].forEach {
             self.addSubview($0)
         }
     }
     
     override func configureLayout() {
-        nameLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.verticalEdges.equalToSuperview().inset(3)
-        }
-        
         stackView.snp.makeConstraints { make in
             make.width.equalTo(9)
+            make.trailing.equalToSuperview()
             make.top.equalTo(nameLabel.snp.top)
             make.bottom.equalTo(nameLabel.snp.bottom)
-            make.trailing.lessThanOrEqualToSuperview().inset(4)
-            make.leading.equalTo(nameLabel.snp.trailing).offset(4)
+        }
+        
+        nameLabel.snp.makeConstraints { make in
+            make.verticalEdges.equalToSuperview().inset(3)
+            make.trailing.equalToSuperview().inset(12)
+            make.leading.greaterThanOrEqualToSuperview().offset(4)
         }
     }
     

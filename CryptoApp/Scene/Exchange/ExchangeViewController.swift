@@ -26,7 +26,6 @@ final class ExchangeViewController: BaseViewController {
             reloadTrigger: PublishRelay()
         )
         let output = viewModel.transform(input)
-        //TODO: ViewWillAppear
         input.reloadTrigger.accept(())
         
         output.coinResult

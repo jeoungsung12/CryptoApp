@@ -11,7 +11,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class NetworkErrorViewController: BaseViewController {
+final class ErrorViewController: BaseViewController {
     private let containerView = UIView()
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
@@ -20,6 +20,10 @@ final class NetworkErrorViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func setBinding() {
+        //TODO: ReloadBtn
     }
     
     override func configureView() {
@@ -31,7 +35,6 @@ final class NetworkErrorViewController: BaseViewController {
         
         descriptionLabel.textColor = .customDarkGray
         descriptionLabel.font = .systemFont(ofSize: 17, weight: .regular)
-        descriptionLabel.text = "네트워크 연결이 일시적으로 원활하지 않습니다. 데이터 또는 Wi-Fi 연결 상태를 확인해주세요."
         descriptionLabel.numberOfLines = 0
         
         [titleLabel, descriptionLabel].forEach {
@@ -82,6 +85,11 @@ final class NetworkErrorViewController: BaseViewController {
         
     }
  
+    func configure(_ errorType: Error) {
+        //TODO: Error Type
+        descriptionLabel.text = "네트워크 연결이 일시적으로 원활하지 않습니다. 데이터 또는 Wi-Fi 연결 상태를 확인해주세요."
+    }
+    
     deinit {
         print(#function, self)
     }
@@ -90,6 +98,6 @@ final class NetworkErrorViewController: BaseViewController {
 
 struct errorview_Preview: PreviewProvider {
     static var previews: some View {
-        ViewControllerRepresentable<NetworkErrorViewController>()
+        ViewControllerRepresentable<ErrorViewController>()
     }
 }
