@@ -9,6 +9,11 @@ import Foundation
 
 extension String {
     
+    static func splitReplaceString(_ market: String) -> String {
+        let (symbol) = market.split(separator: "-")
+        return symbol[0] + "/" + symbol[1]
+    }
+    
     static func doubleToString(_ num: Double) -> String {
         if num.isZero { return "0" }
         if num == Double(Int(num)) {

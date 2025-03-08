@@ -19,7 +19,7 @@ struct ExchangeEntity {
 extension UpbitResponseDTO {
     func toEntity() -> ExchangeEntity {
         return ExchangeEntity(
-            marketName: market,
+            marketName: .splitReplaceString(market),
             currentPrice: .currentToString(tradePrice),
             tradeVolume: .amountToString(accTradePrice24H),
             changePrice: .doubleToString(signedChangePrice),
