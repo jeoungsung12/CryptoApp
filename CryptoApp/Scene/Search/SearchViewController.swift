@@ -6,13 +6,17 @@
 //
 
 import UIKit
+import NVActivityIndicatorView
 import SnapKit
+import Toast
 import RxSwift
 import RxCocoa
 
 final class SearchViewController: BaseViewController {
+    private let searchTextField = UITextField()
     private let categoryView = SearchCategoryView()
     private let tableView = UITableView()
+    private lazy var categoryButtons = [categoryView.coinCategory, categoryView.nftCategory, categoryView.exchangeCategory]
     
     private let viewModel: SearchViewModel
     private var disposeBag = DisposeBag()
@@ -53,9 +57,41 @@ final class SearchViewController: BaseViewController {
                 owner.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
+        
+        searchTextField.rx.controlEvent(.editingDidEndOnExit)
+            .withLatestFrom(searchTextField.rx.text.orEmpty)
+            .withUnretained(self)
+            .map { owner, text in
+                owner.viewModel.isValidSearchText(text)
+            }
+            .bind(with: self) { owner, text in
+                guard let text = text else {
+                    owner.searchTextField.text = owner.viewModel.coinName
+                    owner.view.makeToast("한 글자 이상의 검색어를 입력하세요!", duration: 1, position: .center)
+                    return
+                }
+                if owner.viewModel.coinName.isEqual(text) {
+                    owner.view.makeToast("기존 검색어와 동일합니다!", duration: 1, position: .center)
+                } else {
+                    input.searchTrigger.accept(text)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        categoryButtons.forEach { button in
+            button.rx.tap
+                .asDriver()
+                .drive(with: self) { owner, _ in
+                    owner.toggleButton(button)
+                }
+                .disposed(by: disposeBag)
+        }
     }
     
     override func configureView() {
+        self.navigationItem.titleView = searchTextField
+        searchTextField.text = viewModel.coinName
+        searchTextField.textAlignment = .left
         categoryView.backgroundColor = .white
         configureTableView()
     }
@@ -75,10 +111,14 @@ final class SearchViewController: BaseViewController {
             make.top.equalTo(categoryView.snp.bottom)
             make.bottom.horizontalEdges.equalToSuperview()
         }
+        
+        searchTextField.snp.makeConstraints { make in
+            make.width.equalTo(UIScreen.main.bounds.width - 50)
+        }
     }
     
     deinit {
-        print(#function)
+        print(#function, self)
     }
     
 }
@@ -91,6 +131,16 @@ extension SearchViewController {
         tableView.rowHeight = 70
         tableView.showsVerticalScrollIndicator = false
         tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
+    }
+    
+    private func toggleButton(_ button: UIButton) {
+        categoryButtons.forEach {
+            $0.isSelected = false
+            if $0.isEqual(button) {
+                $0.isSelected = true
+                //TODO: 데이터 초기화
+            }
+        }
     }
     
 }

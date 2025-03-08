@@ -39,8 +39,9 @@ extension SearchViewModel {
         
         input.searchTrigger
             .withUnretained(self)
-            .flatMapLatest { text in
-                return self.service.getSearch(text: text.1)
+            .flatMapLatest { owner, text in
+                owner.coinName = text
+                return owner.service.getSearch(text: text)
                     .catch { error in
                         return Observable.just([])
                     }
@@ -53,6 +54,12 @@ extension SearchViewModel {
         return Output(
             searchResult: searchResult.asDriver(onErrorJustReturn: [])
         )
+    }
+    
+    func isValidSearchText(_ text: String?) -> String? {
+        guard var text = text else { return nil }
+        text.removeAll { $0 == " " }
+        return (text.count >= 1) ? text : nil
     }
     
 }

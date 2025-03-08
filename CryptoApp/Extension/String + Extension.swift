@@ -14,6 +14,12 @@ extension String {
         return symbol[0] + "/" + symbol[1]
     }
     
+    static func dateToString(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM.dd HH:mm 기준"
+        return formatter.string(from: date)
+    }
+    
     static func doubleToString(_ num: Double) -> String {
         if num.isZero { return "0" }
         if num == Double(Int(num)) {

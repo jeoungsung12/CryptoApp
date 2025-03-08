@@ -23,6 +23,7 @@ final class InfoViewModel: BaseViewModel {
     }
     
     struct Output {
+        let timeStamp: BehaviorRelay<Date>
         let coinResult: Driver<[PopularCoinEntity]>
         let nftsResult: Driver<[PopularNftsEntity]>
     }
@@ -39,6 +40,7 @@ final class InfoViewModel: BaseViewModel {
 extension InfoViewModel {
     
     func transform(_ input: Input) -> Output {
+        let timeStamp: BehaviorRelay<Date> = BehaviorRelay(value: Date())
         let coinResult: BehaviorRelay<[PopularCoinEntity]> = BehaviorRelay(value: [])
         let nftsResult: BehaviorRelay<[PopularNftsEntity]> = BehaviorRelay(value: [])
         
@@ -51,12 +53,14 @@ extension InfoViewModel {
                     }
             }
             .bind { data in
+                timeStamp.accept(Date())
                 coinResult.accept(data.coins)
                 nftsResult.accept(data.nfts)
             }
             .disposed(by: disposeBag)
         
         return Output(
+            timeStamp: timeStamp,
             coinResult: coinResult.asDriver(),
             nftsResult: nftsResult.asDriver()
         )
@@ -66,5 +70,12 @@ extension InfoViewModel {
         guard var text = text else { return nil }
         text.removeAll { $0 == " " }
         return (text.count >= 1) ? text : nil
+    }
+    
+    func checkTimer(_ previousTime: Date, _ input: Input) {
+        let difference = Calendar.current.dateComponents([.minute], from: previousTime, to: Date())
+        if let minute = difference.minute, minute >= 10 {
+            input.reloadTrigger.accept(())
+        } else { return }
     }
 }

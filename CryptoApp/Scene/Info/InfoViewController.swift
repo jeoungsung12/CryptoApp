@@ -28,6 +28,11 @@ final class InfoViewController: BaseViewController {
         super.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        //        viewModel.checkTimer(output.timeStamp.value, input)
+    }
+    
     override func setBinding() {
         let input = InfoViewModel.Input(
             reloadTrigger: PublishRelay()
@@ -35,17 +40,41 @@ final class InfoViewController: BaseViewController {
         let output = viewModel.transform(input)
         input.reloadTrigger.accept(())
         
-        output.coinResult
-            .drive(coinCollectionView.rx.items(cellIdentifier: CoinCollectionViewCell.id, cellType: CoinCollectionViewCell.self)) { items, element, cell in
-                cell.configure(element, items)
+        input.reloadTrigger
+            .asDriver(onErrorJustReturn: ())
+            .drive(with: self, onNext: { owner, _ in
+                owner.loadingIndicator.startAnimating()
+            })
+            .disposed(by: disposeBag)
+        
+        Observable<Int>.timer(.seconds(600), scheduler: MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
+            .bind(with: self) { owner, _ in
+                owner.viewModel.checkTimer(output.timeStamp.value, input)
             }
             .disposed(by: disposeBag)
         
-        output.nftsResult
-            .drive(nftsCollectionView.rx.items(cellIdentifier: NftsCollectionViewCell.id, cellType: NftsCollectionViewCell.self)) { items, element, cell in
-                cell.configure(element)
+        //TODO: 어떨때되고 어떨때는안됨.
+        Observable.merge(
+            searchBar.searchTextField.rx.controlEvent(.editingDidEndOnExit).map { _ in () },
+            searchBar.searchButton.rx.tap.map { _ in () }
+        )
+        .withUnretained(self)
+        .map { owner, _ in
+            owner.viewModel.isValidSearchText(owner.searchBar.searchTextField.text)
+        }
+        .asDriver(onErrorJustReturn: nil )
+        .drive(with: self) { owner, text in
+            guard let text = text else {
+                owner.view.makeToast("한 글자 이상의 검색어를 입력하세요!", duration: 1, position: .center)
+                return
             }
-            .disposed(by: disposeBag)
+            let vm = SearchViewModel(coinName: text)
+            let vc = SearchViewController(viewModel: vm)
+            owner.searchBar.searchTextField.text = nil
+            owner.navigationController?.pushViewController(vc, animated: true)
+        }
+        .disposed(by: disposeBag)
         
         coinCollectionView.rx.modelSelected(PopularCoinEntity.self)
             .asDriver()
@@ -57,30 +86,23 @@ final class InfoViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        nftsCollectionView.rx.modelSelected(PopularNftsEntity.self)
-            .asDriver()
-            .drive(with: self) { owner, entity in
-                let vm = CoinDetailViewModel(coinId: entity.id)
-                let vc = CoinDetailViewController(viewModel: vm)
-                //TODO: Coordinate
-                owner.navigationController?.pushViewController(vc, animated: true)
+        output.timeStamp
+            .observe(on: MainScheduler.instance)
+            .bind(with: self) { owner, time in
+                //                owner.loadingIndicator.stopAnimating()
+                owner.timeStampLabel.text = .dateToString(time)
             }
             .disposed(by: disposeBag)
         
-        searchBar.searchButton.rx.tap
-            .withUnretained(self)
-            .map { owner, _ in
-                owner.viewModel.isValidSearchText(owner.searchBar.searchTextField.text)
+        output.coinResult
+            .drive(coinCollectionView.rx.items(cellIdentifier: CoinCollectionViewCell.id, cellType: CoinCollectionViewCell.self)) { items, element, cell in
+                cell.configure(element, items)
             }
-            .asDriver(onErrorJustReturn: nil )
-            .drive(with: self) { owner, text in
-                guard let text = text else {
-                    owner.view.makeToast("한 글자 이상의 검색어를 입력하세요!", duration: 1, position: .center)
-                    return
-                }
-                let vm = SearchViewModel(coinName: text)
-                let vc = SearchViewController(viewModel: vm)
-                owner.navigationController?.pushViewController(vc, animated: true)
+            .disposed(by: disposeBag)
+        
+        output.nftsResult
+            .drive(nftsCollectionView.rx.items(cellIdentifier: NftsCollectionViewCell.id, cellType: NftsCollectionViewCell.self)) { items, element, cell in
+                cell.configure(element)
             }
             .disposed(by: disposeBag)
     }
@@ -97,8 +119,6 @@ final class InfoViewController: BaseViewController {
             $0.font = .systemFont(ofSize: 15, weight: .heavy)
         }
         
-        //TODO:  변경
-        timeStampLabel.text = "02.16 00:30 기준"
         timeStampLabel.textColor = .customGray
         timeStampLabel.textAlignment = .right
         timeStampLabel.font = .systemFont(ofSize: 13, weight: .regular)
@@ -106,7 +126,7 @@ final class InfoViewController: BaseViewController {
     }
     
     override func configureHierarchy() {
-        [searchBar, coinSectionLabel, timeStampLabel, coinCollectionView, nftSectionLabel, nftsCollectionView].forEach {
+        [searchBar, coinSectionLabel, timeStampLabel, coinCollectionView, nftSectionLabel, nftsCollectionView, loadingIndicator].forEach {
             self.view.addSubview($0)
         }
     }
@@ -144,6 +164,10 @@ final class InfoViewController: BaseViewController {
             make.horizontalEdges.equalToSuperview()
             make.bottom.lessThanOrEqualToSuperview().inset(12)
             make.top.equalTo(nftSectionLabel.snp.bottom).offset(24)
+        }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     
