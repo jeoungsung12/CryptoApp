@@ -9,21 +9,18 @@ import UIKit
 import SnapKit
 
 final class UpDownButton: BaseButton {
-    enum ButtonType {
-        case none
-        case up
-        case down
-    }
-    
     private let nameLabel = UILabel()
     private let stackView = UIStackView()
     private let arrowUp = UIImageView()
     private let arrowDown = UIImageView()
-    var type: ButtonType = .none
+    var type: ExchangeButtonEntity.ExchangeButtonState = .none {
+        didSet {
+            configureButton()
+        }
+    }
     
-    init(alignment: NSTextAlignment) {
-        super.init(frame: .zero)
-        nameLabel.textAlignment = alignment
+    override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
     override func configureView() {
@@ -70,25 +67,13 @@ final class UpDownButton: BaseButton {
     
     override var isSelected: Bool {
         didSet {
-            configureType()
+            self.type = type.configureType()
         }
     }
     
 }
 
 extension UpDownButton {
-    
-    private func configureType() {
-        switch type {
-        case .none:
-            self.type = .down
-        case .up:
-            self.type = .none
-        case .down:
-            self.type = .up
-        }
-        configureButton()
-    }
     
     private func configureButton() {
         arrowUp.tintColor = (type == .up ? .customDarkGray : .customGray)

@@ -13,19 +13,7 @@ final class UpbitService {
     private let repository: UpbitRepositoryType = UpbitRepository()
     private var disposeBag = DisposeBag()
     
-    func getAllCoin() -> Observable<[ExchangeEntity]> {
-        return Observable.create { [weak self] observer in
-            
-            self?.repository.getAllCoin()
-                .subscribe { data in
-                    observer.onNext(data.map { $0.toEntity() })
-                    observer.onCompleted()
-                } onError: { error in
-                    observer.onError(error)
-                }
-                .disposed(by: self?.disposeBag ?? DisposeBag())
-            
-            return Disposables.create()
-        }
+    func getAllCoin() -> Observable<[UpbitResponseDTO]> {
+        return repository.getAllCoin()
     }
 }

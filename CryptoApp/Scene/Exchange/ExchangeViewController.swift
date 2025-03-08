@@ -11,8 +11,9 @@ import RxSwift
 import RxCocoa
 
 final class ExchangeViewController: BaseViewController {
-    private let headerView = ExchangeTableHeaderView()
+    private let headerView = ExchangeHeaderView()
     private let tableView = UITableView()
+    private lazy var headerButtons = [headerView.currentButton, headerView.previousButton, headerView.amountButton]
     
     private let viewModel = ExchangeViewModel()
     private var disposeBag = DisposeBag()
@@ -23,16 +24,30 @@ final class ExchangeViewController: BaseViewController {
     
     override func setBinding() {
         let input = ExchangeViewModel.Input(
-            reloadTrigger: PublishRelay()
+            typeTrigger: PublishRelay(),
+            reloadTrigger: BehaviorRelay(value: ExchangeButtonEntity(type: .amount, state: .none))
         )
         let output = viewModel.transform(input)
-        input.reloadTrigger.accept(())
         
         output.coinResult
             .drive(tableView.rx.items(cellIdentifier: ExchangeTableViewCell.id, cellType: ExchangeTableViewCell.self)) { row, element, cell in
                 cell.configure(element)
             }
             .disposed(by: disposeBag)
+        
+        
+        headerButtons.forEach { button in
+            button.rx.tap
+                .asDriver()
+                .drive(with: self) { owner, _ in
+                    owner.toggleButton(button)
+                    input.reloadTrigger.accept(ExchangeButtonEntity(type: button.type.configureButtonType(button.tag), state: button.type))
+                    
+                    let state = owner.headerButtons.map { $0.type }
+                    input.typeTrigger.accept(state)
+                }
+                .disposed(by: disposeBag)
+        }
     }
     
     override func configureView() {
@@ -63,7 +78,7 @@ final class ExchangeViewController: BaseViewController {
     deinit {
         print(#function, self)
     }
-
+    
 }
 
 extension ExchangeViewController {
@@ -74,6 +89,15 @@ extension ExchangeViewController {
         tableView.rowHeight = 40
         tableView.showsVerticalScrollIndicator = false
         tableView.register(ExchangeTableViewCell.self, forCellReuseIdentifier: ExchangeTableViewCell.id)
+    }
+    
+    private func toggleButton(_ button: UIButton) {
+        headerButtons.forEach {
+                if !$0.isEqual(button) {
+                    $0.type = .none
+                }
+            }
+        button.isSelected.toggle()
     }
     
 }

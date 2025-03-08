@@ -10,46 +10,17 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ExchangeTableHeaderView: BaseView {
+final class ExchangeHeaderView: BaseView {
     private let titleLabel = UILabel()
     private let stackView = UIStackView()
-    private let currentButton = UpDownButton(alignment: .right)
-    private let previousButton = UpDownButton(alignment: .center)
-    private let amountButton = UpDownButton(alignment: .right)
+    let currentButton = UpDownButton()
+    let previousButton = UpDownButton()
+    let amountButton = UpDownButton()
     
     private var disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-    }
-    
-    override func setBinding() {
-        currentButton.rx.tap
-            .asDriver()
-            .drive(with: self, onNext: { owner, _ in
-                owner.currentButton.isSelected.toggle()
-                owner.previousButton.isSelected = false
-                owner.amountButton.isSelected = false
-            })
-            .disposed(by: disposeBag)
-        
-        previousButton.rx.tap
-            .asDriver()
-            .drive(with: self, onNext: { owner, _ in
-                owner.previousButton.isSelected.toggle()
-                owner.currentButton.isSelected = false
-                owner.amountButton.isSelected = false
-            })
-            .disposed(by: disposeBag)
-        
-        amountButton.rx.tap
-            .asDriver()
-            .drive(with: self, onNext: { owner, _ in
-                owner.amountButton.isSelected.toggle()
-                owner.currentButton.isSelected = false
-                owner.previousButton.isSelected = false
-            })
-            .disposed(by: disposeBag)
     }
     
     override func configureView() {
@@ -64,6 +35,10 @@ final class ExchangeTableHeaderView: BaseView {
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.distribution = .fillEqually
+        
+        currentButton.tag = 0
+        previousButton.tag = 1
+        amountButton.tag = 2
         
         currentButton.configure("현재가")
         previousButton.configure("전일대비")
