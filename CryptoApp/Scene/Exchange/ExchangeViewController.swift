@@ -40,13 +40,6 @@ final class ExchangeViewController: BaseViewController {
     override func setBinding() {
         let output = viewModel.transform(input)
         
-        reloadTrigger
-            .asDriver(onErrorJustReturn: ())
-            .drive(with: self) { owner, _ in
-                print(#function, "리로드 됩니다!!")
-            }
-            .disposed(by: disposeBag)
-        
         headerButtons.forEach { button in
             button.rx.tap
                 .asDriver()

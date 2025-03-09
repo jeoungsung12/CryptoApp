@@ -8,26 +8,16 @@
 import UIKit
 import SwiftUI
 import SnapKit
-import RxSwift
-import RxCocoa
 
 final class ErrorViewController: BaseViewController {
     private let containerView = UIView()
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private let lineView = UIView()
-    private let reloadBtn = UIButton()
-    private var disposeBag = DisposeBag()
+    
+    let reloadBtn = UIButton()
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-    
-    override func setBinding() {
-//        reloadBtn.rx.tap
-//            .bind(with: self) { owner, _ in
-//                owner.dismiss(animated: true)
-//            }
-//            .disposed(by: disposeBag)
     }
     
     override func configureView() {
