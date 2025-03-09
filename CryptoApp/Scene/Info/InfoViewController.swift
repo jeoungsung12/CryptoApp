@@ -65,6 +65,7 @@ final class InfoViewController: BaseViewController {
             let vc = SearchViewController(viewModel: vm)
             owner.searchBar.searchTextField.text = nil
             owner.navigationController?.pushViewController(vc, animated: true)
+            owner.view.endEditing(true)
         }
         .disposed(by: disposeBag)
         

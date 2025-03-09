@@ -20,10 +20,11 @@ final class SearchViewController: BaseViewController {
     private lazy var categoryButtons = [categoryView.coinCategory, categoryView.nftCategory, categoryView.exchangeCategory]
     
     private let viewModel: SearchViewModel
-    private let input = SearchViewModel.Input(
-        searchTrigger: PublishRelay()
+    private lazy var input = SearchViewModel.Input(
+        searchTrigger: BehaviorRelay(value: viewModel.coinName)
     )
     private var disposeBag = DisposeBag()
+    private lazy var output = viewModel.transform(input)
     
     init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
@@ -40,8 +41,6 @@ final class SearchViewController: BaseViewController {
     }
     
     override func setBinding() {
-        let output = viewModel.transform(input)
-        input.searchTrigger.accept(viewModel.coinName)
         loadingIndicator.startAnimating()
         
         output.errorResult
@@ -57,6 +56,7 @@ final class SearchViewController: BaseViewController {
             .disposed(by: disposeBag)
         
         output.searchResult
+            .asDriver(onErrorJustReturn: [])
             .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { [weak self] row, element, cell in
                 cell.configure(element)
                 cell.viewModel.delegate = self
@@ -85,10 +85,13 @@ final class SearchViewController: BaseViewController {
                 guard let text = text else {
                     owner.searchTextField.text = owner.viewModel.coinName
                     owner.view.makeToast("한 글자 이상의 검색어를 입력하세요!", duration: 1, position: .center)
+                    owner.loadingIndicator.startAnimating()
                     return
                 }
+                
                 if owner.viewModel.coinName.isEqual(text) {
                     owner.view.makeToast("기존 검색어와 동일합니다!", duration: 1, position: .center)
+                    owner.loadingIndicator.stopAnimating()
                 } else {
                     owner.input.searchTrigger.accept(text)
                 }
@@ -157,11 +160,16 @@ extension SearchViewController: ToastDelegate, ErrorDelegate {
     }
     
     private func toggleButton(_ button: UIButton) {
+        guard let text = searchTextField.text else { return }
         categoryButtons.forEach {
             $0.isSelected = false
             if $0.isEqual(button) {
                 $0.isSelected = true
-                //TODO: 데이터 초기화
+                if button.isEqual(categoryView.coinCategory) {
+                    input.searchTrigger.accept(text)
+                } else {
+                    output.searchResult.accept([])
+                }
             }
         }
     }

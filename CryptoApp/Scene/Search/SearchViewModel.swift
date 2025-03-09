@@ -15,12 +15,12 @@ final class SearchViewModel: BaseViewModel {
     
     var coinName: String
     struct Input {
-        let searchTrigger: PublishRelay<String>
+        let searchTrigger: BehaviorRelay<String>
     }
     
     struct Output {
         let errorResult: Driver<CoingeckoError>
-        let searchResult: Driver<[SearchEntity]>
+        let searchResult: BehaviorRelay<[SearchEntity]>
     }
     
     init(coinName: String) {
@@ -53,14 +53,12 @@ extension SearchViewModel {
                         return Observable.just([])
                     }
             }
-            .bind(with: self) { owner, entity in
-                searchResult.accept(entity)
-            }
+            .bind(to: searchResult)
             .disposed(by: disposeBag)
         
         return Output(
             errorResult: errorResult.asDriver(onErrorJustReturn: CoingeckoError.decoding),
-            searchResult: searchResult.asDriver(onErrorJustReturn: [])
+            searchResult: searchResult
         )
     }
     

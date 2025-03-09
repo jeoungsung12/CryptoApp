@@ -39,7 +39,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             
             let errorView = ErrorViewController(viewModel: ErrorViewModel(notiType: self.getTopScene()))
-            print(self.getTopScene())
             if let networkErrorView = errorView.view {
                 window.addSubview(networkErrorView)
                 self.errorWindow = window
