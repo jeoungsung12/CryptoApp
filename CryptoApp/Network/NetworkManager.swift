@@ -10,8 +10,6 @@ import Alamofire
 import RxSwift
 import RxCocoa
 
-//TODO: Protocol
-
 final class NetworkManager {
     
     static let shared = NetworkManager()
@@ -23,15 +21,14 @@ final class NetworkManager {
             AF.request(api)
                 .validate(statusCode: 200..<500)
                 .responseDecodable(of: T.self) { response in
-//                    print(response.debugDescription)
+                    //                    print(response.debugDescription)
                     switch response.result {
                     case let .success(data):
                         observer.onNext(data)
                         observer.onCompleted()
-                        
                     case let .failure(error):
-                        //TODO: CustomError 변경
-                        observer.onError(error)
+                        let customError = error.statusCodeToErrorType(response.response?.statusCode, api)
+                        observer.onError(customError)
                     }
                 }
             return Disposables.create()

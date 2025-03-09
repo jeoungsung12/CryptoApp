@@ -11,13 +11,16 @@ import Alamofire
 enum RouterError: Error, LocalizedError {
     case invalidURLError
     case encodingError
+    case network
     
     var errorDescription: String? {
         switch self {
         case .invalidURLError:
-            "잘못된 URL입니다."
+            "잘못된 URL"
         case .encodingError:
-            "인코딩 에러입니다."
+            "인코딩 에러"
+        case .network:
+            "요청 실패"
         }
     }
 }

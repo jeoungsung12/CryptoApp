@@ -17,7 +17,8 @@ final class GeckoService {
         return Observable.create { [weak self] observer in
             self?.repository.getCoinDetail(id: id)
                 .subscribe(onNext: { data in
-                    guard let data = data.first else { observer.onError(CoingeckoError.DecodingError)
+                    guard let data = data.first else {
+                        observer.onError(CoingeckoError.decoding)
                         return
                     }
                     observer.onNext(data.toEntity())
@@ -56,5 +57,9 @@ final class GeckoService {
                 .disposed(by: self?.disposeBag ?? DisposeBag())
             return Disposables.create()
         }
+    }
+    
+    deinit {
+        print(#function, self)
     }
 }

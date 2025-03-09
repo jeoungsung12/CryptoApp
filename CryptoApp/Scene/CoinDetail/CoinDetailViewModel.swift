@@ -66,17 +66,19 @@ extension CoinDetailViewModel {
         input.starTrigger
             .withLatestFrom(starBtnResult)
             .map { $0.bool }
-            .bind(with: self) { owner, bool in
+            .withUnretained(self)
+            .flatMapLatest { owner, bool in
                 let result = (bool) ? owner.realmRepository.deleteItem(owner.coinId) : owner.realmRepository.addItem(owner.coinId)
                 switch result {
                 case .add:
-                    starBtnResult.accept(RealmEntity(bool: true, message: result.description))
+                    return Observable.just(RealmEntity(bool: true, message: result.description))
                 case .delete:
-                    starBtnResult.accept(RealmEntity(bool: false, message: result.description))
+                    return Observable.just(RealmEntity(bool: false, message: result.description))
                 case .error:
-                    starBtnResult.accept(RealmEntity(bool: bool, message: result.description))
+                    return Observable.just(RealmEntity(bool: bool, message: result.description))
                 }
             }
+            .bind(to: starBtnResult)
             .disposed(by: disposeBag)
         
         input.reloadTrigger
