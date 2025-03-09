@@ -18,6 +18,8 @@ final class SearchViewController: BaseViewController {
     private let categoryView = SearchCategoryView()
     private let tableView = UITableView()
     private lazy var categoryButtons = [categoryView.coinCategory, categoryView.nftCategory, categoryView.exchangeCategory]
+    private let swipeLeft = UISwipeGestureRecognizer()
+    private let swipeRight = UISwipeGestureRecognizer()
     
     private let viewModel: SearchViewModel
     private lazy var input = SearchViewModel.Input(
@@ -106,19 +108,37 @@ final class SearchViewController: BaseViewController {
                 }
                 .disposed(by: disposeBag)
         }
+        
+        Observable.merge(
+            swipeLeft.rx.event.map { _ in
+                UISwipeGestureRecognizer.Direction.left },
+            swipeRight.rx.event.map { _ in
+                UISwipeGestureRecognizer.Direction.right }
+        )
+        .bind(with: self) { owner, direction in
+            owner.swipeToggleButton(direction)
+        }
+        .disposed(by: disposeBag)
     }
     
     override func configureView() {
         self.setNavigation()
         self.navigationItem.titleView = searchTextField
+        
         searchTextField.text = viewModel.coinName
         searchTextField.textAlignment = .left
         categoryView.backgroundColor = .white
+        swipeLeft.direction = .left
+        swipeRight.direction = .right
+        
         configureTableView()
     }
     
     override func configureHierarchy() {
         [categoryView, tableView, loadingIndicator].forEach { self.view.addSubview($0) }
+        [swipeLeft, swipeRight].forEach {
+            self.view.addGestureRecognizer($0)
+        }
     }
     
     override func configureLayout() {
@@ -174,6 +194,21 @@ extension SearchViewController: ToastDelegate, ErrorDelegate {
         }
     }
     
+    private func swipeToggleButton(_ direction: UISwipeGestureRecognizer.Direction) {
+        guard let selectedIndex = categoryButtons.firstIndex(where: { $0.isSelected }) else { return }
+        
+        var newIndex = selectedIndex
+        if direction == .left {
+            newIndex = min(selectedIndex + 1, categoryButtons.count - 1)
+        } else if direction == .right {
+            newIndex = max(selectedIndex - 1, 0)
+        }
+        
+        if newIndex != selectedIndex {
+            toggleButton(categoryButtons[newIndex])
+        }
+    }
+
     func toastMessage(_ message: String) {
         print(#function)
         self.view.makeToast(message, duration: 1, position: .center)
