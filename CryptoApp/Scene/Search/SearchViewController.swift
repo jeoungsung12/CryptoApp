@@ -20,6 +20,9 @@ final class SearchViewController: BaseViewController {
     private lazy var categoryButtons = [categoryView.coinCategory, categoryView.nftCategory, categoryView.exchangeCategory]
     
     private let viewModel: SearchViewModel
+    private let input = SearchViewModel.Input(
+        searchTrigger: PublishRelay()
+    )
     private var disposeBag = DisposeBag()
     
     init(viewModel: SearchViewModel) {
@@ -37,19 +40,27 @@ final class SearchViewController: BaseViewController {
     }
     
     override func setBinding() {
-        let input = SearchViewModel.Input(
-            searchTrigger: PublishRelay()
-        )
         let output = viewModel.transform(input)
         input.searchTrigger.accept(viewModel.coinName)
         loadingIndicator.startAnimating()
         
+        output.errorResult
+            .drive(with: self) { owner, error in
+                let vm = ErrorViewModel(notiType: .search)
+                let vc = ErrorViewController(viewModel: vm)
+                vm.delegate = owner
+                vc.configure(error)
+                vc.modalPresentationStyle = .overCurrentContext
+                owner.present(vc, animated: true)
+                owner.loadingIndicator.stopAnimating()
+            }
+            .disposed(by: disposeBag)
+        
         output.searchResult
             .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { [weak self] row, element, cell in
-                guard let self = self else { return }
                 cell.configure(element)
                 cell.viewModel.delegate = self
-                self.loadingIndicator.stopAnimating()
+                self?.loadingIndicator.stopAnimating()
             }
             .disposed(by: disposeBag)
         
@@ -79,7 +90,7 @@ final class SearchViewController: BaseViewController {
                 if owner.viewModel.coinName.isEqual(text) {
                     owner.view.makeToast("기존 검색어와 동일합니다!", duration: 1, position: .center)
                 } else {
-                    input.searchTrigger.accept(text)
+                    owner.input.searchTrigger.accept(text)
                 }
             }
             .disposed(by: disposeBag)
@@ -134,12 +145,13 @@ final class SearchViewController: BaseViewController {
     
 }
 
-extension SearchViewController: ToastDelegate {
+extension SearchViewController: ToastDelegate, ErrorDelegate {
     
     private func configureTableView() {
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
         tableView.rowHeight = 70
+        tableView.keyboardDismissMode = .onDrag
         tableView.showsVerticalScrollIndicator = false
         tableView.register(SearchTableViewCell.self, forCellReuseIdentifier: SearchTableViewCell.id)
     }
@@ -157,6 +169,16 @@ extension SearchViewController: ToastDelegate {
     func toastMessage(_ message: String) {
         print(#function)
         self.view.makeToast(message, duration: 1, position: .center)
+    }
+    
+    func reloadNetwork(type: ErrorSenderType) {
+        guard let text = searchTextField.text else { return }
+        switch type {
+        case .search:
+            input.searchTrigger.accept(text)
+        default:
+            break
+        }
     }
     
 }

@@ -33,6 +33,7 @@ final class InfoViewController: BaseViewController {
     }
     
     override func setBinding() {
+        loadingIndicator.startAnimating()
         input.reloadTrigger
             .asDriver(onErrorJustReturn: ())
             .drive(with: self, onNext: { owner, _ in
@@ -74,6 +75,18 @@ final class InfoViewController: BaseViewController {
                 let vc = CoinDetailViewController(viewModel: vm)
                 //TODO: Coordinate
                 owner.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        output.errorResult
+            .drive(with: self) { owner, error in
+                let vm = ErrorViewModel(notiType: .info)
+                let vc = ErrorViewController(viewModel: vm)
+                vm.delegate = owner
+                vc.configure(error)
+                vc.modalPresentationStyle = .overCurrentContext
+                owner.present(vc, animated: true)
+                owner.loadingIndicator.stopAnimating()
             }
             .disposed(by: disposeBag)
         
@@ -167,7 +180,7 @@ final class InfoViewController: BaseViewController {
     }
 }
 
-extension InfoViewController {
+extension InfoViewController: ErrorDelegate {
     
     private func configureCollectionView() {
         coinCollectionView.backgroundColor = .white
@@ -198,5 +211,14 @@ extension InfoViewController {
             layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
         }
         return layout
+    }
+    
+    func reloadNetwork(type: ErrorSenderType) {
+        switch type {
+        case .info:
+            input.reloadTrigger.accept(())
+        default:
+            break
+        }
     }
 }

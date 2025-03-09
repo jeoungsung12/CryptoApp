@@ -48,7 +48,7 @@ extension SearchTableViewModel {
                 let bool = starBtnResult.value.bool
                 let coinId = input.starStateTrigger.value
                 let result = (bool) ? owner.realmRepository.deleteItem(coinId) : owner.realmRepository.addItem(coinId)
-                owner.delegate?.toastMessage(result.description)
+                owner.delegate?.toastMessage(coinId + result.description)
                 switch result {
                 case .add:
                     return Observable.just(RealmEntity(bool: true, message: result.description))

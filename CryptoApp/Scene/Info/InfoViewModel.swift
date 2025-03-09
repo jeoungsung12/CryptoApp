@@ -23,6 +23,7 @@ final class InfoViewModel: BaseViewModel {
     }
     
     struct Output {
+        let errorResult: Driver<CoingeckoError>
         let timeStamp: BehaviorRelay<Date>
         let coinResult: Driver<[PopularCoinEntity]>
         let nftsResult: Driver<[PopularNftsEntity]>
@@ -43,12 +44,18 @@ extension InfoViewModel {
         let timeStamp: BehaviorRelay<Date> = BehaviorRelay(value: Date())
         let coinResult: BehaviorRelay<[PopularCoinEntity]> = BehaviorRelay(value: [])
         let nftsResult: BehaviorRelay<[PopularNftsEntity]> = BehaviorRelay(value: [])
+        let errorResult: PublishRelay<CoingeckoError> = PublishRelay()
         
         input.reloadTrigger
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 return owner.service.getTrending()
                     .catch { error in
+                        if let geckoError = error as? CoingeckoError {
+                            errorResult.accept(geckoError)
+                        } else {
+                            errorResult.accept(.decoding)
+                        }
                         return Observable.just(PopularEntity(coins: [], nfts: []))
                     }
             }
@@ -60,6 +67,7 @@ extension InfoViewModel {
             .disposed(by: disposeBag)
         
         return Output(
+            errorResult: errorResult.asDriver(onErrorJustReturn: CoingeckoError.decoding),
             timeStamp: timeStamp,
             coinResult: coinResult.asDriver(),
             nftsResult: nftsResult.asDriver()

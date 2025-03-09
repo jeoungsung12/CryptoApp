@@ -55,6 +55,17 @@ final class ExchangeViewController: BaseViewController {
                 .disposed(by: disposeBag)
         }
         
+        output.errorResult
+            .drive(with: self) { owner, error in
+                let vm = ErrorViewModel(notiType: .exchange)
+                let vc = ErrorViewController(viewModel: vm)
+                vc.modalPresentationStyle = .overCurrentContext
+                vm.delegate = owner
+                vc.configure(error)
+                owner.present(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
         output.coinResult
             .drive(tableView.rx.items(cellIdentifier: ExchangeTableViewCell.id, cellType: ExchangeTableViewCell.self)) { row, element, cell in
                 cell.configure(element)
@@ -102,7 +113,7 @@ final class ExchangeViewController: BaseViewController {
     
 }
 
-extension ExchangeViewController {
+extension ExchangeViewController: ErrorDelegate {
     
     private func configureTableView() {
         tableView.separatorStyle = .none
@@ -119,6 +130,15 @@ extension ExchangeViewController {
                 }
             }
         button.isSelected.toggle()
+    }
+    
+    func reloadNetwork(type: ErrorSenderType) {
+        switch type {
+        case .exchange:
+            input.reloadTrigger.accept(ExchangeButtonEntity(type: .amount, state: .none))
+        default:
+            break
+        }
     }
     
 }

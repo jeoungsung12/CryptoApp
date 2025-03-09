@@ -21,7 +21,7 @@ final class NetworkManager {
             AF.request(api)
                 .validate(statusCode: 200..<500)
                 .responseDecodable(of: T.self) { response in
-                    //                    print(response.debugDescription)
+//                    print(response.debugDescription)
                     switch response.result {
                     case let .success(data):
                         observer.onNext(data)

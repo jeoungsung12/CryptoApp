@@ -19,7 +19,12 @@ final class CoinDetailViewController: BaseViewController {
     private let starButton = UIBarButtonItem(image: .star, style: .plain, target: nil, action: nil)
     private let tableView = UITableView()
     private let navigationBar = DetailCustomNavigation()
+    
     private let viewModel: CoinDetailViewModel
+    private lazy var input = CoinDetailViewModel.Input(
+        starTrigger: starButton.rx.tap,
+        reloadTrigger: PublishRelay()
+    )
     private var disposeBag = DisposeBag()
     
     init(viewModel: CoinDetailViewModel) {
@@ -37,13 +42,21 @@ final class CoinDetailViewController: BaseViewController {
     }
     
     override func setBinding() {
-        let input = CoinDetailViewModel.Input(
-            starTrigger: starButton.rx.tap,
-            reloadTrigger: PublishRelay()
-        )
         let output = viewModel.transform(input)
         input.reloadTrigger.accept(())
         loadingIndicator.startAnimating()
+        
+        output.errorResult
+            .drive(with: self) { owner, error in
+                let vm = ErrorViewModel(notiType: .detail)
+                let vc = ErrorViewController(viewModel: vm)
+                vm.delegate = owner
+                vc.configure(error)
+                vc.modalPresentationStyle = .overCurrentContext
+                owner.present(vc, animated: true)
+                owner.loadingIndicator.stopAnimating()
+            }
+            .disposed(by: disposeBag)
         
         output.starBtnResult
             .drive(with: self) { owner, entity in
@@ -128,4 +141,17 @@ final class CoinDetailViewController: BaseViewController {
     deinit {
         print(#function, self)
     }
+}
+
+extension CoinDetailViewController: ErrorDelegate {
+    
+    func reloadNetwork(type: ErrorSenderType) {
+        switch type {
+        case .detail:
+            input.reloadTrigger.accept(())
+        default:
+            break
+        }
+    }
+    
 }

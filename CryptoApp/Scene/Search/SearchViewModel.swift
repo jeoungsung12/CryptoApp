@@ -19,6 +19,7 @@ final class SearchViewModel: BaseViewModel {
     }
     
     struct Output {
+        let errorResult: Driver<CoingeckoError>
         let searchResult: Driver<[SearchEntity]>
     }
     
@@ -36,6 +37,7 @@ extension SearchViewModel {
     
     func transform(_ input: Input) -> Output {
         let searchResult: BehaviorRelay<[SearchEntity]> = BehaviorRelay(value: [])
+        let errorResult: PublishRelay<CoingeckoError> = PublishRelay()
         
         input.searchTrigger
             .withUnretained(self)
@@ -43,6 +45,11 @@ extension SearchViewModel {
                 owner.coinName = text
                 return owner.service.getSearch(text: text)
                     .catch { error in
+                        if let geckoError = error as? CoingeckoError {
+                            errorResult.accept(geckoError)
+                        } else {
+                            errorResult.accept(.decoding)
+                        }
                         return Observable.just([])
                     }
             }
@@ -52,6 +59,7 @@ extension SearchViewModel {
             .disposed(by: disposeBag)
         
         return Output(
+            errorResult: errorResult.asDriver(onErrorJustReturn: CoingeckoError.decoding),
             searchResult: searchResult.asDriver(onErrorJustReturn: [])
         )
     }

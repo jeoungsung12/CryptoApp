@@ -19,6 +19,7 @@ final class ExchangeViewModel: BaseViewModel {
     }
     
     struct Output {
+        let errorResult: Driver<Error>
         let coinResult: Driver<[ExchangeEntity]>
     }
     
@@ -36,6 +37,7 @@ extension ExchangeViewModel {
     
     func transform(_ input: Input) -> Output {
         let coinResult: BehaviorRelay<[ExchangeEntity]> = BehaviorRelay(value: [])
+        let errorResult: PublishRelay<Error> = PublishRelay()
         
         input.typeTrigger
             .map { state in
@@ -55,6 +57,7 @@ extension ExchangeViewModel {
             .flatMapLatest { owner, type in
                 return owner.service.getAllCoin()
                     .catch { error in
+                        errorResult.accept(error)
                         return Observable.just([])
                     }
                     .map { owner.sortedExchange(type, $0) }
@@ -65,6 +68,7 @@ extension ExchangeViewModel {
             .disposed(by: disposeBag)
         
         return Output(
+            errorResult: errorResult.asDriver(onErrorJustReturn: NSError()),
             coinResult: coinResult.asDriver()
         )
     }

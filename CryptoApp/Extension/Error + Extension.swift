@@ -14,7 +14,8 @@ extension Error {
             return UpbitError(rawValue: statusCode) ?? RouterError.network
         } else if let _ = router as? CoingeckoRouter {
             return CoingeckoError(rawValue: statusCode) ?? RouterError.network
+        } else {
+            return RouterError.network
         }
-        return RouterError.network
     }
 }

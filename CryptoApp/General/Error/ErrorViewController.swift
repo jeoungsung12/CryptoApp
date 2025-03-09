@@ -18,15 +18,32 @@ final class ErrorViewController: BaseViewController {
     private let lineView = UIView()
     private let reloadBtn = UIButton()
     
+    private let viewModel: ErrorViewModel
     private var disposeBag = DisposeBag()
+    
+    init(viewModel: ErrorViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    @MainActor
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     override func setBinding() {
-        reloadBtn.rx.tap
-            .bind(with: self) { owner, _ in
-                //TODO: 네트워크 요청 다시!
+        let input = ErrorViewModel.Input(
+            reloadTrigger: reloadBtn.rx.tap
+        )
+        let output = viewModel.transform(input)
+        
+        output.networkReloadTrigger
+            .drive(with: self) { owner, _ in
+                owner.dismiss(animated: true)
             }
             .disposed(by: disposeBag)
     }
