@@ -17,13 +17,17 @@ final class ErrorViewController: BaseViewController {
     private let descriptionLabel = UILabel()
     private let lineView = UIView()
     private let reloadBtn = UIButton()
-    
+    private var disposeBag = DisposeBag()
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     override func setBinding() {
-        //TODO: ReloadBtn
+//        reloadBtn.rx.tap
+//            .bind(with: self) { owner, _ in
+//                owner.dismiss(animated: true)
+//            }
+//            .disposed(by: disposeBag)
     }
     
     override func configureView() {
@@ -36,6 +40,7 @@ final class ErrorViewController: BaseViewController {
         descriptionLabel.textColor = .customDarkGray
         descriptionLabel.font = .systemFont(ofSize: 17, weight: .regular)
         descriptionLabel.numberOfLines = 0
+        descriptionLabel.text = "네트워크 연결이 일시적으로 원활하지 않습니다. 데이터 또는 Wi-Fi 연결 상태를 확인해주세요."
         
         [titleLabel, descriptionLabel].forEach {
             $0.textAlignment = .center
@@ -58,7 +63,7 @@ final class ErrorViewController: BaseViewController {
     override func configureLayout() {
         containerView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.height.equalToSuperview().dividedBy(4)
+            make.height.equalToSuperview().dividedBy(3)
             make.horizontalEdges.equalToSuperview().inset(24)
         }
         
@@ -87,7 +92,7 @@ final class ErrorViewController: BaseViewController {
  
     func configure(_ errorType: Error) {
         //TODO: Error Type
-        descriptionLabel.text = "네트워크 연결이 일시적으로 원활하지 않습니다. 데이터 또는 Wi-Fi 연결 상태를 확인해주세요."
+        
     }
     
     deinit {
