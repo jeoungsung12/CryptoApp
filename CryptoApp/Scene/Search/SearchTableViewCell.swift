@@ -16,10 +16,35 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
     private let titleLabel = UILabel()
     private let subTitleLabel = UILabel()
     private let rankLabel = UILabel()
-    let starbutton = UIButton()
+    private let starbutton = UIButton()
+    
+    var viewModel = SearchTableViewModel()
+    private lazy var input = SearchTableViewModel.Input(
+        starStateTrigger: BehaviorRelay(value: ""),
+        starTrigger: starbutton.rx.tap
+    )
+    private var disposeBag = DisposeBag()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        thumbImageView.image = nil
+        [titleLabel, subTitleLabel, rankLabel].forEach {
+            $0.text = nil
+        }
+    }
+    
+    override func setBinding() {
+        let output = viewModel.transform(input)
+        
+        output.starBtnResult
+            .drive(with: self) { owner, entity in
+                owner.starbutton.setImage((entity.bool) ? .starFill : .star, for: .normal)
+            }
+            .disposed(by: disposeBag)
     }
     
     override func configureView() {
@@ -86,12 +111,16 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
         titleLabel.text = model.symbol
         subTitleLabel.text = model.name
         rankLabel.text = " #\(model.rank) "
-        
+        input.starStateTrigger.accept(model.id)
         if let url = URL(string: model.thumb) {
             thumbImageView.kf.setImage(with: url)
         } else {
             //TODO: 예외처리
         }
+    }
+    
+    deinit {
+        print(#function, self)
     }
     
 }

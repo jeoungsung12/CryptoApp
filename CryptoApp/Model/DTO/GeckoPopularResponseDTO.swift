@@ -68,14 +68,13 @@ struct PopularNftsDTO: Decodable {
     struct PopularDataDTO: Decodable {
         let floorPrice, floorPriceInUsd24HPercentageChange, h24Volume, h24AverageSalePrice: String
         let sparkline: String
-        let content: String?
         
         enum CodingKeys: String, CodingKey {
             case floorPrice = "floor_price"
             case floorPriceInUsd24HPercentageChange = "floor_price_in_usd_24h_percentage_change"
             case h24Volume = "h24_volume"
             case h24AverageSalePrice = "h24_average_sale_price"
-            case sparkline, content
+            case sparkline
         }
     }
     

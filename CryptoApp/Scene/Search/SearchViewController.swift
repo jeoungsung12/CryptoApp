@@ -43,8 +43,10 @@ final class SearchViewController: BaseViewController {
         input.searchTrigger.accept(viewModel.coinName)
         
         output.searchResult
-            .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { row, element, cell in
+            .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { [weak self] row, element, cell in
+                guard let self = self else { return }
                 cell.configure(element)
+                cell.viewModel.delegate = self
             }
             .disposed(by: disposeBag)
         
@@ -124,7 +126,7 @@ final class SearchViewController: BaseViewController {
     
 }
 
-extension SearchViewController {
+extension SearchViewController: ToastDelegate {
     
     private func configureTableView() {
         tableView.backgroundColor = .white
@@ -142,6 +144,11 @@ extension SearchViewController {
                 //TODO: 데이터 초기화
             }
         }
+    }
+    
+    func toastMessage(_ message: String) {
+        print(#function)
+        self.view.makeToast(message, duration: 1, position: .center)
     }
     
 }
