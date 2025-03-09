@@ -36,7 +36,6 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         
         subTitleLabel.font = .smallRegular
         subTitleLabel.textColor = .customGray
-
     }
     
     override func configureHierarchy() {
@@ -58,19 +57,25 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(thumbImageView.snp.top)
             make.leading.equalTo(thumbImageView.snp.trailing).offset(8)
+            make.trailing.lessThanOrEqualTo(percentSection.snp.leading).inset(4)
         }
         
         subTitleLabel.snp.makeConstraints { make in
             make.bottom.equalTo(thumbImageView.snp.bottom)
             make.top.greaterThanOrEqualTo(titleLabel.snp.bottom).offset(4)
             make.leading.equalTo(thumbImageView.snp.trailing).offset(8)
+            make.trailing.lessThanOrEqualTo(percentSection.snp.leading).inset(4)
         }
         
         percentSection.snp.makeConstraints { make in
             make.centerY.trailing.equalToSuperview()
             make.leading.greaterThanOrEqualTo(subTitleLabel.snp.leading).offset(4)
         }
-        //TODO: 우선순위
+        
+        percentSection.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        [titleLabel, subTitleLabel].forEach {
+            $0.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        }
     }
     
     func configure(_ model: PopularCoinEntity,_ items: Int) {

@@ -23,30 +23,16 @@ final class InfoViewController: BaseViewController {
     
     private let viewModel = InfoViewModel()
     private let input = InfoViewModel.Input(
-        timerTrigger: PublishRelay(),
         reloadTrigger: BehaviorRelay(value: ())
     )
     private lazy var output = viewModel.transform(input)
     private var disposeBag = DisposeBag()
-    private var timerDispose: Disposable?
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.checkTimer(output.timeStamp.value, input)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        timerDispose?.dispose()
-    }
-    
     override func setBinding() {
-        setTimer()
-        
         input.reloadTrigger
             .asDriver(onErrorJustReturn: ())
             .drive(with: self, onNext: { owner, _ in
@@ -54,10 +40,9 @@ final class InfoViewController: BaseViewController {
             })
             .disposed(by: disposeBag)
         
-        input.timerTrigger
-            .asDriver(onErrorJustReturn: ())
-            .drive(with: self) { owner, _ in
-                owner.setTimer()
+        Observable<Int>.interval(.seconds(600), scheduler: MainScheduler.instance)
+            .bind(with: self) { owner, _ in
+                owner.input.reloadTrigger.accept(())
             }
             .disposed(by: disposeBag)
         
@@ -214,12 +199,4 @@ extension InfoViewController {
         }
         return layout
     }
-    
-    private func setTimer() {
-        timerDispose = Observable<Int>.interval(.seconds(5), scheduler: MainScheduler.instance)
-            .bind(with: self) { owner, _ in
-                owner.input.reloadTrigger.accept(())
-            }
-    }
-    
 }
