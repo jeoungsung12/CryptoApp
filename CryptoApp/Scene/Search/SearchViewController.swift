@@ -13,6 +13,7 @@ import RxSwift
 import RxCocoa
 
 final class SearchViewController: BaseViewController {
+    private let loadingIndicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: 40, height: 40)), type: .ballPulseSync, color: .customDarkGray)
     private let searchTextField = UITextField()
     private let categoryView = SearchCategoryView()
     private let tableView = UITableView()
@@ -41,12 +42,14 @@ final class SearchViewController: BaseViewController {
         )
         let output = viewModel.transform(input)
         input.searchTrigger.accept(viewModel.coinName)
+        loadingIndicator.startAnimating()
         
         output.searchResult
             .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { [weak self] row, element, cell in
                 guard let self = self else { return }
                 cell.configure(element)
                 cell.viewModel.delegate = self
+                self.loadingIndicator.stopAnimating()
             }
             .disposed(by: disposeBag)
         
@@ -64,7 +67,8 @@ final class SearchViewController: BaseViewController {
             .withLatestFrom(searchTextField.rx.text.orEmpty)
             .withUnretained(self)
             .map { owner, text in
-                owner.viewModel.isValidSearchText(text)
+                owner.loadingIndicator.startAnimating()
+                return owner.viewModel.isValidSearchText(text)
             }
             .bind(with: self) { owner, text in
                 guard let text = text else {
@@ -100,7 +104,7 @@ final class SearchViewController: BaseViewController {
     }
     
     override func configureHierarchy() {
-        [categoryView, tableView].forEach { self.view.addSubview($0) }
+        [categoryView, tableView, loadingIndicator].forEach { self.view.addSubview($0) }
     }
     
     override func configureLayout() {
@@ -117,6 +121,10 @@ final class SearchViewController: BaseViewController {
         
         searchTextField.snp.makeConstraints { make in
             make.width.equalTo(UIScreen.main.bounds.width - 50)
+        }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     

@@ -9,11 +9,13 @@ import UIKit
 import Kingfisher
 import SnapKit
 import Toast
+import NVActivityIndicatorView
 import RxSwift
 import RxCocoa
 import RxDataSources
 
 final class CoinDetailViewController: BaseViewController {
+    private let loadingIndicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: 40, height: 40)), type: .ballPulseSync, color: .customDarkGray)
     private let starButton = UIBarButtonItem(image: .star, style: .plain, target: nil, action: nil)
     private let tableView = UITableView()
     private let navigationBar = DetailCustomNavigation()
@@ -41,6 +43,7 @@ final class CoinDetailViewController: BaseViewController {
         )
         let output = viewModel.transform(input)
         input.reloadTrigger.accept(())
+        loadingIndicator.startAnimating()
         
         output.starBtnResult
             .drive(with: self) { owner, entity in
@@ -73,7 +76,9 @@ final class CoinDetailViewController: BaseViewController {
             }
         }
         
-        output.detailResult
+        let detailResult = output.detailResult
+        
+        detailResult
             .map { entity -> [DetailSection] in
                 guard let entity = entity else { return [] }
                 return [DetailSection(items: [
@@ -85,10 +90,11 @@ final class CoinDetailViewController: BaseViewController {
             .drive(tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        output.detailResult
+        detailResult
             .drive(with: self) { owner, entity in
                 guard let entity = entity else { return }
                 owner.navigationBar.configure(entity.name, entity.image)
+                owner.loadingIndicator.stopAnimating()
             }
             .disposed(by: disposeBag)
     }
@@ -105,13 +111,17 @@ final class CoinDetailViewController: BaseViewController {
     }
     
     override func configureHierarchy() {
-        self.view.addSubview(tableView)
+        [tableView, loadingIndicator].forEach { self.view.addSubview($0) }
     }
     
     override func configureLayout() {
         tableView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide)
             make.horizontalEdges.bottom.equalToSuperview()
+        }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     

@@ -7,12 +7,18 @@
 
 import UIKit
 
+protocol ErrorSceneDelegate: AnyObject {
+    func reloadNetwork()
+}
+
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     var errorWindow: UIWindow?
     
-    private var networkMonitor: NetworkMonitorManagerType = NetworkMonitorManager.shared
+    weak var errorDelegate: ErrorSceneDelegate?
+    private var networkMonitor: NetworkMonitorManagerType = NetworkMonitorManager()
+    private let errorView = ErrorViewController()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
@@ -24,6 +30,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             switch status {
             case .satisfied:
                 self?.dismissErrorView()
+                self?.errorDelegate?.reloadNetwork()
             case .unsatisfied:
                 self?.presentErrorView(scene: scene)
             default:
@@ -38,7 +45,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.windowLevel = .statusBar
             window.makeKeyAndVisible()
             
-            if let networkErrorView = ErrorViewController().view {
+            if let networkErrorView = errorView.view {
                 window.addSubview(networkErrorView)
                 self.errorWindow = window
             }

@@ -14,10 +14,6 @@ protocol NetworkMonitorManagerType {
 }
 
 final class NetworkMonitorManager: NetworkMonitorManagerType {
-    static let shared = NetworkMonitorManager()
-    
-    private init() { }
-    
     private let queue = DispatchQueue.global(qos: .background)
     private let monitor = NWPathMonitor()
     
