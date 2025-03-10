@@ -9,13 +9,21 @@ import UIKit
 
 final class TabBarController: UITabBarController {
     
+    weak var coordinator: TabBarCoordinator?
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        configureTabBar()
     }
     
-    private func configureTabBar() {
+    init() {
+        print(#function)
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configureTabBar() {
         let appearance = UITabBarAppearance()
         appearance.backgroundColor = .white
         appearance.selectionIndicatorTintColor = .black
@@ -27,11 +35,6 @@ final class TabBarController: UITabBarController {
         self.tabBar.tintColor = .customDarkGray
         self.tabBar.unselectedItemTintColor = .darkGray
         
-        let firstVC = UINavigationController(rootViewController: ExchangeViewController())
-        let secondVC = UINavigationController(rootViewController: InfoViewController())
-        let thridVC = UINavigationController(rootViewController: PortfolioViewController())
-        
-        self.setViewControllers([firstVC, secondVC, thridVC], animated: true)
         guard let items = self.tabBar.items else { return }
         items[0].image = .chartLine
         items[1].image = .chartBar

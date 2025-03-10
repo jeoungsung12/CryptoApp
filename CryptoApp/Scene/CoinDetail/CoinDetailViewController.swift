@@ -27,6 +27,7 @@ final class CoinDetailViewController: BaseViewController {
     )
     private var disposeBag = DisposeBag()
     
+    weak var coordinator: DetailCoordinator?
     init(viewModel: CoinDetailViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

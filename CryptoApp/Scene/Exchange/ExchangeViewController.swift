@@ -23,6 +23,7 @@ final class ExchangeViewController: BaseViewController {
     )
     private var timerDispose: Disposable?
     
+    weak var coordinator: ExchangeCoordinator?
     override func viewDidLoad() {
         super.viewDidLoad()
     }

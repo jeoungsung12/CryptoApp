@@ -11,13 +11,18 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     var errorWindow: UIWindow?
-    
+    private var appCoordinator: AppCoordinator?
     private var networkMonitor: NetworkMonitorManagerType = NetworkMonitorManager()
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: scene)
-        window?.rootViewController = TabBarController()
-        window?.makeKeyAndVisible()
+        let window = UIWindow(windowScene: scene)
+        self.window = window
+        
+        let nv = UINavigationController()
+        let appCoordinator = AppCoordinator(window: window, navigationController: nv)
+        self.appCoordinator = appCoordinator
+        appCoordinator.start()
         
         networkMonitor.startMonitoring { [weak self] status in
             switch status {

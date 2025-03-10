@@ -9,6 +9,7 @@ import UIKit
 
 final class PortfolioViewController: UIViewController {
     
+    weak var coordinator: PortfolioCoordinator?
     override func viewDidLoad() {
         super.viewDidLoad()
         

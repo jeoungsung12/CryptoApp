@@ -28,6 +28,7 @@ final class InfoViewController: BaseViewController {
     private lazy var output = viewModel.transform(input)
     private var disposeBag = DisposeBag()
     
+    weak var coordinator: InfoCoordinator?
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -61,10 +62,7 @@ final class InfoViewController: BaseViewController {
                 owner.view.makeToast("한 글자 이상의 검색어를 입력하세요!", duration: 1, position: .center)
                 return
             }
-            let vm = SearchViewModel(coinName: text)
-            let vc = SearchViewController(viewModel: vm)
-            owner.searchBar.searchTextField.text = nil
-            owner.navigationController?.pushViewController(vc, animated: true)
+            owner.coordinator?.pushSearch(text)
             owner.view.endEditing(true)
         }
         .disposed(by: disposeBag)
@@ -72,10 +70,7 @@ final class InfoViewController: BaseViewController {
         coinCollectionView.rx.modelSelected(PopularCoinEntity.self)
             .asDriver()
             .drive(with: self) { owner, entity in
-                let vm = CoinDetailViewModel(coinId: entity.id)
-                let vc = CoinDetailViewController(viewModel: vm)
-                //TODO: Coordinate
-                owner.navigationController?.pushViewController(vc, animated: true)
+                owner.coordinator?.pushDetail(entity.id)
             }
             .disposed(by: disposeBag)
         
