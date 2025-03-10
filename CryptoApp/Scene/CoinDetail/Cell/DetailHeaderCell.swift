@@ -61,7 +61,6 @@ final class DetailHeaderCell: BaseTableViewCell, ReusableIdentifier {
     
     func configure(_ model: DetailHeaderEntity) {
         priceLabel.text = "₩" + model.price
-        //TODO: update format
         updateLabel.text = model.lastUpdated
         
         chartView = CoinChartHostingView(rootView: CoinChartView(chartData: model.chartData))

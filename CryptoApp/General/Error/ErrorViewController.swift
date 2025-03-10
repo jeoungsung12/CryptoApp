@@ -42,12 +42,11 @@ final class ErrorViewController: BaseViewController {
         let output = viewModel.transform(input)
         
         output.networkReloadTrigger
-            .drive(with: self) { owner, bool in
-                print("에러 리로드 하세요")
-                if bool {
-                    //TODO: 네트워크 통신?
+            .drive(with: self) { owner, type in
+                switch type {
+                case .network:
                     owner.view.makeToast(ErrorSenderType.network.rawValue, duration: 1, position: .center)
-                } else {
+                default:
                     owner.dismiss(animated: true)
                 }
             }

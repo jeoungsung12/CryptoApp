@@ -55,9 +55,11 @@ final class DetailCustomNavigation: BaseView {
         titleLabel.text = title
         if let url = URL(string: image) {
             thumbImageView.kf.setImage(with: url)
-        } else {
-            //TODO: 예외처리
         }
+    }
+    
+    deinit {
+        print(#function, self)
     }
     
 }
