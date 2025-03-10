@@ -59,6 +59,11 @@ extension InfoViewModel {
                         return Observable.just(PopularEntity(coins: [], nfts: []))
                     }
             }
+            .map {
+                let coinData = Array($0.coins.prefix(14))
+                let nftsData = Array($0.nfts.prefix(7))
+                return PopularEntity(coins: coinData, nfts: nftsData)
+            }
             .bind { data in
                 timeStamp.accept(Date())
                 coinResult.accept(data.coins)

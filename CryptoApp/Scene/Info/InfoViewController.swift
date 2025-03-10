@@ -162,7 +162,7 @@ final class InfoViewController: BaseViewController {
         }
         
         coinCollectionView.snp.makeConstraints { make in
-            make.height.equalToSuperview().dividedBy(3)
+            make.height.equalTo(300)
             make.horizontalEdges.equalToSuperview()
             make.top.equalTo(coinSectionLabel.snp.bottom).offset(24)
         }
