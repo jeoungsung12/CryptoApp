@@ -145,6 +145,8 @@ final class SearchViewController: BaseViewController {
     }
     
     override func configureView() {
+        setNavigation()
+        self.navigationItem.leftBarButtonItem = nil
         self.navigationItem.titleView = searchTextField
         
         searchTextField.text = viewModel.coinName
