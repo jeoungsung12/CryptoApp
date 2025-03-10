@@ -42,6 +42,11 @@ final class CoinDetailViewController: BaseViewController {
         super.viewDidLoad()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        coordinator?.popChild()
+    }
+    
     override func setBinding() {
         let output = viewModel.transform(input)
         input.reloadTrigger.accept(())

@@ -21,5 +21,19 @@ final class SearchCoordinator: NavigationCoordinator {
         let searchVM = SearchViewModel(coinName: coinName)
         let searchVC = SearchViewController(viewModel: searchVM)
         navigationController.pushViewController(searchVC, animated: true)
+        searchVC.coordinator = self
+    }
+    
+    func pushDetail(_ coinId: String) {
+        let detailCoord = DetailCoordinator(navigationController: navigationController, coinId: coinId)
+        push(detailCoord)
+    }
+    
+    func popChild() {
+        pop(self)
+    }
+    
+    deinit {
+        print(#function, self)
     }
 }

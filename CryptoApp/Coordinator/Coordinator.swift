@@ -16,7 +16,7 @@ protocol NavigationCoordinator: Coordinator {
     var navigationController: UINavigationController { get }
     
     func push(_ coordinator: Coordinator)
-    func pop()
+    func pop(_ coordinator: Coordinator)
 }
 
 extension NavigationCoordinator {
@@ -26,11 +26,8 @@ extension NavigationCoordinator {
         coordinator.start()
     }
     
-    func pop() {
-        navigationController.popViewController(animated: true)
-        
-        if let lastCoordinator = childCoordinators.last {
-            childCoordinators.removeLast()
-        }
+    func pop(_ coordinator: Coordinator) {
+        childCoordinators.removeAll { $0 !== coordinator }
     }
+
 }

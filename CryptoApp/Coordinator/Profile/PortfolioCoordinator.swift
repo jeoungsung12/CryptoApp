@@ -21,4 +21,7 @@ final class PortfolioCoordinator: NavigationCoordinator {
         navigationController.viewControllers = [portVC]
     }
     
+    deinit {
+        print(#function, self)
+    }
 }

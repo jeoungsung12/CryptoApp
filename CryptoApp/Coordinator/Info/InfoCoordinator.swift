@@ -31,4 +31,11 @@ final class InfoCoordinator: NavigationCoordinator {
         push(searchCoord)
     }
     
+    func popChild() {
+        pop(self)
+    }
+    
+    deinit {
+        print(#function, self)
+    }
 }

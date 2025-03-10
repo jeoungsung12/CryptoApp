@@ -28,6 +28,7 @@ final class SearchViewController: BaseViewController {
     private var disposeBag = DisposeBag()
     private lazy var output = viewModel.transform(input)
     
+    weak var coordinator: SearchCoordinator?
     init(viewModel: SearchViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -40,6 +41,11 @@ final class SearchViewController: BaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        coordinator?.popChild()
     }
     
     override func setBinding() {
@@ -69,10 +75,7 @@ final class SearchViewController: BaseViewController {
         tableView.rx.modelSelected(SearchEntity.self)
             .observe(on: MainScheduler.instance)
             .bind(with: self) { owner, entity in
-                let vm = CoinDetailViewModel(coinId: entity.id)
-                let vc = CoinDetailViewController(viewModel: vm)
-                //TODO: Coordinate
-                owner.navigationController?.pushViewController(vc, animated: true)
+                owner.coordinator?.pushDetail(entity.id)
             }
             .disposed(by: disposeBag)
         
@@ -122,7 +125,6 @@ final class SearchViewController: BaseViewController {
     }
     
     override func configureView() {
-        self.setNavigation()
         self.navigationItem.titleView = searchTextField
         
         searchTextField.text = viewModel.coinName

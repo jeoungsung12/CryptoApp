@@ -33,6 +33,11 @@ final class InfoViewController: BaseViewController {
         super.viewDidLoad()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        coordinator?.popChild()
+    }
+    
     override func setBinding() {
         loadingIndicator.startAnimating()
         input.reloadTrigger
@@ -63,6 +68,7 @@ final class InfoViewController: BaseViewController {
                 return
             }
             owner.coordinator?.pushSearch(text)
+            owner.searchBar.searchTextField.text = nil
             owner.view.endEditing(true)
         }
         .disposed(by: disposeBag)

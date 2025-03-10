@@ -21,4 +21,7 @@ final class ExchangeCoordinator: NavigationCoordinator {
         navigationController.viewControllers = [exchangeVC]
     }
     
+    deinit {
+        print(#function, self)
+    }
 }

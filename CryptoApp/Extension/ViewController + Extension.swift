@@ -9,7 +9,12 @@ import UIKit
 
 extension UIViewController {
     
-    func setNavigation(title: String? = nil, backTitle: String? = nil, backImage: UIImage? = .arrowleft, color: UIColor = .customDarkGray) {
+    func setNavigation(
+        title: String? = nil,
+        backTitle: String? = nil,
+        backImage: UIImage? = .arrowleft,
+        color: UIColor = .customDarkGray
+    ) {
         guard let navigationBar = navigationController?.navigationBar else { return }
         
         let titleLabel = UILabel()

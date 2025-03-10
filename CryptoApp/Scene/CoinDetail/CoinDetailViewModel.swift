@@ -86,7 +86,6 @@ extension CoinDetailViewModel {
         input.reloadTrigger
             .withUnretained(self)
             .flatMapLatest { owner, _ in
-                print("다시시작!")
                 return owner.service.getCoinDetail(id: owner.coinId)
                     .catch { error in
                         if let geckoError = error as? CoingeckoError {
