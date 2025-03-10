@@ -20,7 +20,7 @@ final class SearchViewModel: BaseViewModel {
     
     struct Output {
         let errorResult: Driver<CoingeckoError>
-        let searchResult: BehaviorRelay<[SearchEntity]>
+        let searchResult: PublishRelay<[SearchEntity]>
     }
     
     init(coinName: String) {
@@ -36,7 +36,7 @@ final class SearchViewModel: BaseViewModel {
 extension SearchViewModel {
     
     func transform(_ input: Input) -> Output {
-        let searchResult: BehaviorRelay<[SearchEntity]> = BehaviorRelay(value: [])
+        let searchResult: PublishRelay<[SearchEntity]> = PublishRelay()
         let errorResult: PublishRelay<CoingeckoError> = PublishRelay()
         
         input.searchTrigger

@@ -20,9 +20,9 @@ struct RealmEntity {
         var description: String {
             switch self {
             case .add:
-                "즐겨찾기에 추가 되었습니다"
+                "즐겨찾기되었습니다."
             case .delete:
-                "즐겨찾기에 삭제 되었습니다"
+                "즐겨찾기에서 제거되었습니다"
             case .error:
                 "실패! 잠시후 다시 시도해 보세요"
             }
@@ -75,7 +75,7 @@ final class RealmRepository: RealmRepositoryType {
     }
     
     func getState(_ id: String) -> Bool {
-        if let data = realm.object(ofType: CoinData.self, forPrimaryKey: id) {
+        if let _ = realm.object(ofType: CoinData.self, forPrimaryKey: id) {
             return true
         } else {
             return false

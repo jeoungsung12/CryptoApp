@@ -95,8 +95,10 @@ final class InfoViewController: BaseViewController {
         output.timeStamp
             .observe(on: MainScheduler.instance)
             .bind(with: self) { owner, time in
-                owner.loadingIndicator.stopAnimating()
                 owner.timeStampLabel.text = .dateToString(.info, date: time)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    owner.loadingIndicator.stopAnimating()
+                }
             }
             .disposed(by: disposeBag)
         

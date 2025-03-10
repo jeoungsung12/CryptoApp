@@ -53,22 +53,35 @@ final class SearchViewController: BaseViewController {
         
         output.errorResult
             .drive(with: self) { owner, error in
-                let vm = ErrorViewModel(notiType: .search)
-                let vc = ErrorViewController(viewModel: vm)
-                vm.delegate = owner
-                vc.configure(error)
-                vc.modalPresentationStyle = .overCurrentContext
-                owner.present(vc, animated: true)
+                if (error == .decoding) || (error == .notFound) {
+                    self.view.makeToast("검색 결과가 없습니다", duration: 1.5, position: .center)
+                } else {
+                    let vm = ErrorViewModel(notiType: .search)
+                    let vc = ErrorViewController(viewModel: vm)
+                    vm.delegate = owner
+                    vc.configure(error)
+                    vc.modalPresentationStyle = .overCurrentContext
+                    owner.present(vc, animated: true)
+                }
                 owner.loadingIndicator.stopAnimating()
             }
             .disposed(by: disposeBag)
         
-        output.searchResult
-            .asDriver(onErrorJustReturn: [])
-            .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { [weak self] row, element, cell in
+        let searchResult = output.searchResult.asDriver(onErrorJustReturn: [])
+        
+        searchResult
+            .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { row, element, cell in
                 cell.configure(element)
                 cell.viewModel.delegate = self
-                self?.loadingIndicator.stopAnimating()
+            }
+            .disposed(by: disposeBag)
+        
+        searchResult
+            .drive(with: self) { owner, entity in
+                if entity.isEmpty {
+                    self.view.makeToast("검색 결과가 없습니다", duration: 1.5, position: .center)
+                }
+                owner.loadingIndicator.stopAnimating()
             }
             .disposed(by: disposeBag)
         
@@ -83,7 +96,6 @@ final class SearchViewController: BaseViewController {
             .withLatestFrom(searchTextField.rx.text.orEmpty)
             .withUnretained(self)
             .map { owner, text in
-                owner.loadingIndicator.startAnimating()
                 return owner.viewModel.isValidSearchText(text)
             }
             .bind(with: self) { owner, text in
@@ -99,6 +111,7 @@ final class SearchViewController: BaseViewController {
                     owner.loadingIndicator.stopAnimating()
                 } else {
                     owner.input.searchTrigger.accept(text)
+                    owner.loadingIndicator.startAnimating()
                 }
             }
             .disposed(by: disposeBag)

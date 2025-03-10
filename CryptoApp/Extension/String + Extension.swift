@@ -24,7 +24,7 @@ extension String {
     
     static func splitReplaceString(_ market: String) -> String {
         let (symbol) = market.split(separator: "-")
-        return symbol[0] + "/" + symbol[1]
+        return symbol[1] + "/" + symbol[0]
     }
     
     static func dateToString(_ type: DateFormatType, dateString: String = "", date: Date = Date()) -> String {
@@ -49,7 +49,7 @@ extension String {
     }
     
     static func convertNumber(_ type: DoubleToStringType, value: Any) -> String {
-            let num: Double
+            var num: Double = 0.0
             
             if let doubleValue = value as? Double {
                 num = doubleValue
@@ -60,7 +60,6 @@ extension String {
             }
             
             if num.isZero { return "0" }
-            
             switch type {
             case .dToS, .sToS:
                 return num == Double(Int(num)) ? Int(num).formatted() : String(format: "%.2f", num)

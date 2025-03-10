@@ -51,7 +51,7 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
         thumbImageView.contentMode = .scaleToFill
         thumbImageView.clipsToBounds = true
         thumbImageView.backgroundColor = .customGray
-        thumbImageView.layer.cornerRadius = 20
+        thumbImageView.layer.cornerRadius = 18
         
         titleLabel.font = .boldSystemFont(ofSize: 15)
         titleLabel.textColor = .customDarkGray
@@ -78,7 +78,7 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
     
     override func configureLayout() {
         thumbImageView.snp.makeConstraints { make in
-            make.size.equalTo(40)
+            make.size.equalTo(36)
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().inset(24)
         }
@@ -114,8 +114,6 @@ final class SearchTableViewCell: BaseTableViewCell, ReusableIdentifier {
         input.starStateTrigger.accept(model.id)
         if let url = URL(string: model.thumb) {
             thumbImageView.kf.setImage(with: url)
-        } else {
-            //TODO: 예외처리
         }
     }
     

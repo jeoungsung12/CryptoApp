@@ -73,11 +73,11 @@ extension CoinDetailViewModel {
                 let result = (bool) ? owner.realmRepository.deleteItem(owner.coinId) : owner.realmRepository.addItem(owner.coinId)
                 switch result {
                 case .add:
-                    return Observable.just(RealmEntity(bool: true, message: result.description))
+                    return Observable.just(RealmEntity(bool: true, message: owner.coinId + result.description))
                 case .delete:
-                    return Observable.just(RealmEntity(bool: false, message: result.description))
+                    return Observable.just(RealmEntity(bool: false, message: owner.coinId + result.description))
                 case .error:
-                    return Observable.just(RealmEntity(bool: bool, message: result.description))
+                    return Observable.just(RealmEntity(bool: bool, message: owner.coinId + result.description))
                 }
             }
             .bind(to: starBtnResult)
