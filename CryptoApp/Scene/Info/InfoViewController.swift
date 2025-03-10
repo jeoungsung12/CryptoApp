@@ -40,10 +40,13 @@ final class InfoViewController: BaseViewController {
     
     override func setBinding() {
         loadingIndicator.startAnimating()
+        self.disableTouchScreen()
+        
         input.reloadTrigger
             .asDriver(onErrorJustReturn: ())
             .drive(with: self, onNext: { owner, _ in
                 owner.loadingIndicator.startAnimating()
+                owner.disableTouchScreen()
             })
             .disposed(by: disposeBag)
         
@@ -89,6 +92,7 @@ final class InfoViewController: BaseViewController {
                 vc.modalPresentationStyle = .overCurrentContext
                 owner.present(vc, animated: true)
                 owner.loadingIndicator.stopAnimating()
+                owner.ableTouchScreen()
             }
             .disposed(by: disposeBag)
         
@@ -98,6 +102,7 @@ final class InfoViewController: BaseViewController {
                 owner.timeStampLabel.text = .dateToString(.info, date: time)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     owner.loadingIndicator.stopAnimating()
+                    owner.ableTouchScreen()
                 }
             }
             .disposed(by: disposeBag)

@@ -52,4 +52,8 @@ final class SearchCategoryView: BaseView {
         }
     }
     
+    deinit {
+        print(#function, self)
+    }
+    
 }

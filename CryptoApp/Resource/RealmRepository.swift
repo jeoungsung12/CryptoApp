@@ -53,7 +53,7 @@ final class RealmRepository: RealmRepositoryType {
         do {
             try realm.write {
                 let object = CoinData(id: id)
-                realm.add(object)
+                realm.create(CoinData.self, value: object, update: .modified)
             }
             return .add
         } catch {

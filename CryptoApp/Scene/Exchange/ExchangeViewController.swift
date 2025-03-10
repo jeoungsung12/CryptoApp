@@ -7,10 +7,12 @@
 
 import UIKit
 import SnapKit
+import NVActivityIndicatorView
 import RxSwift
 import RxCocoa
 
 final class ExchangeViewController: BaseViewController {
+    private let loadingIndicator = NVActivityIndicatorView(frame: CGRect(origin: .zero, size: CGSize(width: 40, height: 40)), type: .ballPulseSync, color: .customDarkGray)
     private let headerView = ExchangeHeaderView()
     private let tableView = UITableView()
     private lazy var headerButtons = [headerView.currentButton, headerView.previousButton, headerView.amountButton]
@@ -40,7 +42,8 @@ final class ExchangeViewController: BaseViewController {
     
     override func setBinding() {
         let output = viewModel.transform(input)
-        
+        loadingIndicator.startAnimating()
+        self.disableTouchScreen()
         headerButtons.forEach { button in
             button.rx.tap
                 .asDriver()
@@ -67,9 +70,18 @@ final class ExchangeViewController: BaseViewController {
             }
             .disposed(by: disposeBag)
         
-        output.coinResult
+        let coinResult = output.coinResult
+        
+        coinResult
             .drive(tableView.rx.items(cellIdentifier: ExchangeTableViewCell.id, cellType: ExchangeTableViewCell.self)) { row, element, cell in
                 cell.configure(element)
+            }
+            .disposed(by: disposeBag)
+        
+        coinResult
+            .drive(with: self) { owner, entity in
+                owner.loadingIndicator.stopAnimating()
+                owner.ableTouchScreen()
             }
             .disposed(by: disposeBag)
     }
@@ -90,7 +102,7 @@ final class ExchangeViewController: BaseViewController {
     }
     
     override func configureHierarchy() {
-        [headerView, tableView].forEach {
+        [headerView, tableView, loadingIndicator].forEach {
             self.view.addSubview($0)
         }
     }
@@ -105,6 +117,10 @@ final class ExchangeViewController: BaseViewController {
         tableView.snp.makeConstraints { make in
             make.top.equalTo(headerView.snp.bottom)
             make.bottom.horizontalEdges.equalToSuperview()
+        }
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
         }
     }
     

@@ -14,7 +14,6 @@ struct GeckoDetailResponseDTO: Decodable {
     let marketCapChange24H, marketCapChangePercentage24H: Double
     let circulatingSupply, totalSupply, ath, athChangePercentage: Double
     let atl, atlChangePercentage: Double
-    let roi: String?
     let maxSupply: Double?
     let sparkline: Sparkline
     
@@ -44,7 +43,6 @@ struct GeckoDetailResponseDTO: Decodable {
         case atl
         case atlChangePercentage = "atl_change_percentage"
         case atlDate = "atl_date"
-        case roi
         case lastUpdated = "last_updated"
         case sparkline = "sparkline_in_7d"
     }
@@ -79,6 +77,5 @@ struct GeckoDetailResponseDTO: Decodable {
         
         
         self.maxSupply = try container.decodeIfPresent(Double.self, forKey: .maxSupply) ?? 0.0
-        self.roi = try container.decodeIfPresent(String.self, forKey: .roi) ?? ""
     }
 }

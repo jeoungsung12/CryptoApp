@@ -36,4 +36,14 @@ extension UIViewController {
         self.navigationItem.backButtonDisplayMode = .minimal
     }
     
+    func disableTouchScreen() {
+        UIApplication.shared.beginIgnoringInteractionEvents()
+
+    }
+    
+    func ableTouchScreen() {
+        UIApplication.shared.endIgnoringInteractionEvents()
+
+    }
+    
 }

@@ -35,7 +35,7 @@ final class CoinDetailViewModel: BaseViewModel {
     private let service = GeckoService()
     private var disposeBag = DisposeBag()
     
-    var coinId: String
+    private var coinId: String
     struct Input {
         let starTrigger: ControlEvent<Void>
         let reloadTrigger: PublishRelay<Void>

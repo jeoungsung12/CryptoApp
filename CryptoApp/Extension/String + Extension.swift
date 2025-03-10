@@ -65,8 +65,9 @@ extension String {
                 return num == Double(Int(num)) ? Int(num).formatted() : String(format: "%.2f", num)
                 
             case .currentPrice:
-                //TODO: 정수인 경우 처리!
-                if num == Double(Int(num)) { return Int(num).formatted() }
+                if (num == Double(Int(num)) && String(Int(num)).count >= 4 ) {
+                    return Int(num).formatted()
+                }
                 let formatted = String(format: "%.2f", num)
                 return (formatted.last == "0") ? String(format: "%.1f", num) : formatted
                 

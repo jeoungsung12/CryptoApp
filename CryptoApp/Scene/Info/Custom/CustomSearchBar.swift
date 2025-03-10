@@ -49,4 +49,7 @@ final class CustomSearchBar: BaseView {
         }
     }
     
+    deinit {
+        print(#function, self)
+    }
 }

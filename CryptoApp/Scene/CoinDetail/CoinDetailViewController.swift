@@ -51,6 +51,7 @@ final class CoinDetailViewController: BaseViewController {
         let output = viewModel.transform(input)
         input.reloadTrigger.accept(())
         loadingIndicator.startAnimating()
+        self.disableTouchScreen()
         
         output.errorResult
             .drive(with: self) { owner, error in
@@ -61,6 +62,7 @@ final class CoinDetailViewController: BaseViewController {
                 vc.modalPresentationStyle = .overCurrentContext
                 owner.present(vc, animated: true)
                 owner.loadingIndicator.stopAnimating()
+                owner.ableTouchScreen()
             }
             .disposed(by: disposeBag)
         
@@ -114,6 +116,7 @@ final class CoinDetailViewController: BaseViewController {
                 guard let entity = entity else { return }
                 owner.navigationBar.configure(entity.name, entity.image)
                 owner.loadingIndicator.stopAnimating()
+                owner.ableTouchScreen()
             }
             .disposed(by: disposeBag)
     }

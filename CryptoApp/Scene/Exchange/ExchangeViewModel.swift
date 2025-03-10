@@ -36,7 +36,7 @@ final class ExchangeViewModel: BaseViewModel {
 extension ExchangeViewModel {
     
     func transform(_ input: Input) -> Output {
-        let coinResult: BehaviorRelay<[ExchangeEntity]> = BehaviorRelay(value: [])
+        let coinResult: PublishRelay<[ExchangeEntity]> = PublishRelay()
         let errorResult: PublishRelay<Error> = PublishRelay()
         
         input.typeTrigger
@@ -69,7 +69,7 @@ extension ExchangeViewModel {
         
         return Output(
             errorResult: errorResult.asDriver(onErrorJustReturn: NSError()),
-            coinResult: coinResult.asDriver()
+            coinResult: coinResult.asDriver(onErrorJustReturn: [])
         )
     }
     

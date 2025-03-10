@@ -45,6 +45,9 @@ final class PercentPriceView: BaseView {
         [previousLabel, percentLabel].forEach {
             $0.textColor = model.color
         }
-        
+    }
+    
+    deinit {
+        print(#function, self)
     }
 }

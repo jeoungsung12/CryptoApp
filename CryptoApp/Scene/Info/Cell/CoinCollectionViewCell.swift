@@ -84,12 +84,12 @@ final class CoinCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         subTitleLabel.text = model.name
         
         if let url = URL(string: model.image) {
-            //TODO: ImageDownSampling
             thumbImageView.kf.setImage(with: url)
-        } else {
-            //TODO: 예외처리
         }
         percentSection.configure(model.volumePercent, color: model.color)
     }
     
+    deinit {
+        print(#function, self)
+    }
 }

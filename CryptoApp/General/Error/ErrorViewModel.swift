@@ -14,7 +14,7 @@ enum ErrorSenderType: String {
     case info
     case search
     case detail
-    case none
+    case network = "네트워크 통신이 원활하지 않습니다."
 }
 
 protocol ErrorDelegate: AnyObject {
@@ -31,7 +31,7 @@ final class ErrorViewModel: BaseViewModel {
     }
     
     struct Output {
-        let networkReloadTrigger: Driver<Void>
+        let networkReloadTrigger: Driver<Bool>
     }
     
     init(notiType: ErrorSenderType) {
@@ -42,17 +42,24 @@ final class ErrorViewModel: BaseViewModel {
 extension ErrorViewModel {
     
     func transform(_ input: Input) -> Output {
-        let networkReload: PublishRelay<Void> = PublishRelay()
+        let networkReload: PublishRelay<Bool> = PublishRelay()
         
         input.reloadTrigger
-            .bind(with: self, onNext: { owner, _ in
-                owner.setDelegate()
-                networkReload.accept(())
-            })
+            .withUnretained(self)
+            .flatMapLatest { owner, _ in
+                switch owner.notiType {
+                case .network:
+                    return Observable.just(true)
+                default:
+                    owner.setDelegate()
+                    return Observable.just((false))
+                }
+            }
+            .bind(to: networkReload)
             .disposed(by: disposeBag)
         
         return Output(
-            networkReloadTrigger: networkReload.asDriver(onErrorJustReturn: ())
+            networkReloadTrigger: networkReload.asDriver(onErrorJustReturn: false)
         )
     }
     

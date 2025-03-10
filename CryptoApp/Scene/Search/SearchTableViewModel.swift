@@ -26,6 +26,14 @@ final class SearchTableViewModel: BaseViewModel {
     struct Output {
         let starBtnResult: Driver<RealmEntity>
     }
+    
+    init() {
+        print(#function, self)
+    }
+    
+    deinit {
+        print(#function, self)
+    }
 }
 
 extension SearchTableViewModel {

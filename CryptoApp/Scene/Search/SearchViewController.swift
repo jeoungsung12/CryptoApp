@@ -46,15 +46,17 @@ final class SearchViewController: BaseViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         coordinator?.popChild()
+        reloadNetwork(type: .search)
     }
     
     override func setBinding() {
         loadingIndicator.startAnimating()
+        self.disableTouchScreen()
         
         output.errorResult
             .drive(with: self) { owner, error in
                 if (error == .decoding) || (error == .notFound) {
-                    self.view.makeToast("검색 결과가 없습니다", duration: 1.5, position: .center)
+                    owner.view.makeToast("검색 결과가 없습니다", duration: 1.5, position: .center)
                 } else {
                     let vm = ErrorViewModel(notiType: .search)
                     let vc = ErrorViewController(viewModel: vm)
@@ -64,13 +66,14 @@ final class SearchViewController: BaseViewController {
                     owner.present(vc, animated: true)
                 }
                 owner.loadingIndicator.stopAnimating()
+                owner.ableTouchScreen()
             }
             .disposed(by: disposeBag)
         
         let searchResult = output.searchResult.asDriver(onErrorJustReturn: [])
         
         searchResult
-            .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { row, element, cell in
+            .drive(tableView.rx.items(cellIdentifier: SearchTableViewCell.id, cellType: SearchTableViewCell.self)) { [weak self] row, element, cell in
                 cell.configure(element)
                 cell.viewModel.delegate = self
             }
@@ -79,9 +82,10 @@ final class SearchViewController: BaseViewController {
         searchResult
             .drive(with: self) { owner, entity in
                 if entity.isEmpty {
-                    self.view.makeToast("검색 결과가 없습니다", duration: 1.5, position: .center)
+                    owner.view.makeToast("검색 결과가 없습니다", duration: 1.5, position: .center)
                 }
                 owner.loadingIndicator.stopAnimating()
+                owner.ableTouchScreen()
             }
             .disposed(by: disposeBag)
         
@@ -102,16 +106,19 @@ final class SearchViewController: BaseViewController {
                 guard let text = text else {
                     owner.searchTextField.text = owner.viewModel.coinName
                     owner.view.makeToast("한 글자 이상의 검색어를 입력하세요!", duration: 1, position: .center)
-                    owner.loadingIndicator.startAnimating()
+                    owner.loadingIndicator.stopAnimating()
+                    owner.ableTouchScreen()
                     return
                 }
                 
                 if owner.viewModel.coinName.isEqual(text) {
                     owner.view.makeToast("기존 검색어와 동일합니다!", duration: 1, position: .center)
                     owner.loadingIndicator.stopAnimating()
+                    owner.ableTouchScreen()
                 } else {
                     owner.input.searchTrigger.accept(text)
                     owner.loadingIndicator.startAnimating()
+                    owner.disableTouchScreen()
                 }
             }
             .disposed(by: disposeBag)
@@ -225,7 +232,6 @@ extension SearchViewController: ToastDelegate, ErrorDelegate {
     }
 
     func toastMessage(_ message: String) {
-        print(#function)
         self.view.makeToast(message, duration: 1, position: .center)
     }
     

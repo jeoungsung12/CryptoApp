@@ -71,10 +71,11 @@ final class NftsCollectionViewCell: BaseCollectionViewCell, ReusableIdentifier {
         
         if let url = URL(string: model.image) {
             thumbImageView.kf.setImage(with: url)
-        } else {
-            //TODO: 예외처리
         }
         percentSection.configure(model.volumePercent, color: model.color)
     }
     
+    deinit {
+        print(#function, self)
+    }
 }

@@ -59,4 +59,8 @@ final class SearchCategoryItem: BaseButton {
     func configure(_ title: String) {
         btnLabel.text = title
     }
+    
+    deinit {
+        print(#function, self)
+    }
 }
