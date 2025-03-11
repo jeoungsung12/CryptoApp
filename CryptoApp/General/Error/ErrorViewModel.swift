@@ -49,7 +49,6 @@ extension ErrorViewModel {
         input.reloadTrigger
             .withUnretained(self)
             .flatMapLatest { owner, _ in
-                print(owner, "버튼이 탭 되었슴")
                 switch owner.notiType {
                 case .network:
                     return owner.checkNetwork()

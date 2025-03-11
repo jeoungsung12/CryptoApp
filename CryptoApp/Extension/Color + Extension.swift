@@ -11,7 +11,6 @@ extension UIColor {
     
     static func stringColor(_ percent: Double) -> UIColor {
         if percent.isZero { return .customDarkGray }
-        guard let percent = Double(String(format: "%.2f", percent)) else { return .customDarkGray }
         return (percent < 0) ? .customBlue : .customRed
     }
     
