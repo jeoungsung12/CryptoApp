@@ -36,13 +36,13 @@ extension String {
             return formatter.string(from: date)
         case .detailChart:
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-            formatter.timeZone = TimeZone(abbreviation: "UTC")
+            formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
             guard let date = formatter.date(from: dateString) else { return dateString }
             formatter.dateFormat = "M/dd HH:mm:ss 업데이트"
             return formatter.string(from: date)
         case .detailATD:
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-            formatter.timeZone = TimeZone(abbreviation: "UTC")
+            formatter.timeZone = TimeZone(identifier: "Asia/Seoul")
             guard let date = formatter.date(from: dateString) else { return dateString }
             formatter.dateFormat = "yy년 M월 dd일"
             return formatter.string(from: date)
