@@ -47,15 +47,11 @@ extension ErrorViewModel {
         let networkReload: PublishRelay<ErrorSenderType> = PublishRelay()
         
         input.reloadTrigger
-            .debug("Reload Button Tap")
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 switch owner.notiType {
                 case .network:
                     return owner.checkNetwork()
-                        .catch { error in
-                            Observable.just(owner.notiType)
-                        }
                 default:
                     owner.setDelegate()
                     return Observable.just((owner.notiType))
