@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import Network
 
 enum ErrorSenderType: String {
     case exchange
@@ -24,7 +25,6 @@ protocol ErrorDelegate: AnyObject {
 
 final class ErrorViewModel: BaseViewModel {
     private var disposeBag = DisposeBag()
-    private var networkMonitor: NetworkMonitorManagerType = NetworkMonitorManager()
     
     var notiType: ErrorSenderType
     weak var delegate: ErrorDelegate?
@@ -47,11 +47,15 @@ extension ErrorViewModel {
         let networkReload: PublishRelay<ErrorSenderType> = PublishRelay()
         
         input.reloadTrigger
+            .debug("Reload Button Tap")
             .withUnretained(self)
             .flatMapLatest { owner, _ in
                 switch owner.notiType {
                 case .network:
                     return owner.checkNetwork()
+                        .catch { error in
+                            Observable.just(owner.notiType)
+                        }
                 default:
                     owner.setDelegate()
                     return Observable.just((owner.notiType))
@@ -70,22 +74,21 @@ extension ErrorViewModel {
     }
     
     private func checkNetwork() -> Observable<ErrorSenderType> {
-        return Observable.create { [weak self] observer in
-            self?.networkMonitor.startMonitoring { status in
-                switch status {
-                case .satisfied:
-                    print("네트워크 재연결 성공")
-                    observer.onNext(.none)
-                    observer.onCompleted()
-                case .unsatisfied:
-                    observer.onNext(.network)
-                    observer.onCompleted()
-                default:
-                    break
-                }
+        return Observable.create { observer in
+            let monitor = NWPathMonitor()
+            let path = monitor.currentPath
+            
+            if path.status == .satisfied {
+                print("네트워크 연결됨")
+                observer.onNext(.none)
+                observer.onCompleted()
+            } else {
+                print("네트워크 없음")
+                observer.onNext(.network)
                 observer.onCompleted()
             }
             return Disposables.create()
         }
     }
+
 }

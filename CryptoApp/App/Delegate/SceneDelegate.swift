@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    var errorWindow: UIWindow?
     private var appCoordinator: AppCoordinator?
     private var networkMonitor: NetworkMonitorManagerType = NetworkMonitorManager()
     
@@ -29,7 +30,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         networkMonitor.startMonitoring { [weak self] status in
             switch status {
             case .satisfied:
-                self?.dismissErrorView()
+                self?.dismissErrorView(scene: scene)
             case .unsatisfied:
                 self?.presentErrorView(scene: scene)
             default:
@@ -39,22 +40,23 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func presentErrorView(scene: UIScene) {
-        if let windowScene = scene as? UIWindowScene {
-            let window = UIWindow(windowScene: windowScene)
-            window.windowLevel = .normal
-            
-            let errorViewController = ErrorViewController(viewModel: ErrorViewModel(notiType: .network), errorType: NSError())
-            window.rootViewController = errorViewController
-            window.makeKeyAndVisible()
-            
-            self.errorWindow = window
+        if let windowScene = scene as? UIWindowScene,
+           let rootViewController = windowScene.windows.first?.rootViewController {
+            DispatchQueue.main.async {
+                let errorViewController = ErrorViewController(viewModel: ErrorViewModel(notiType: .network), errorType: NSError())
+                errorViewController.modalPresentationStyle = .overCurrentContext
+                rootViewController.present(errorViewController, animated: true, completion: nil)
+            }
         }
     }
     
-    private func dismissErrorView() {
-        errorWindow?.resignKey()
-        errorWindow?.isHidden = true
-        errorWindow = nil
+    private func dismissErrorView(scene: UIScene) {
+        if let windowScene = scene as? UIWindowScene,
+           let rootViewController = windowScene.windows.first?.rootViewController {
+            DispatchQueue.main.async {
+                rootViewController.dismiss(animated: true)
+            }
+        }
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {

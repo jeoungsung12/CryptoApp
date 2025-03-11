@@ -17,28 +17,41 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Crypto.Com" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Erd-Zh-gWz">
-                                <rect key="frame" x="80.333333333333329" y="402" width="232.66666666666669" height="48"/>
-                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="40"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="정성윤" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yjd-3J-wt0">
-                                <rect key="frame" x="24" y="512" width="345" height="21"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O9D-NL-HMK">
+                                <rect key="frame" x="24" y="326" width="345" height="200"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Crypto.com" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xu9-ms-Xcs">
+                                        <rect key="frame" x="24" y="23.999999999999996" width="297" height="48.666666666666657"/>
+                                        <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="40"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="정성윤" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kwQ-qo-6KK">
+                                        <rect key="frame" x="24" y="140" width="297" height="36"/>
+                                        <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="30"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="xu9-ms-Xcs" secondAttribute="trailing" constant="24" id="Rkh-fl-Kso"/>
+                                    <constraint firstItem="xu9-ms-Xcs" firstAttribute="top" secondItem="O9D-NL-HMK" secondAttribute="top" constant="24" id="Zvv-yT-xvr"/>
+                                    <constraint firstItem="kwQ-qo-6KK" firstAttribute="leading" secondItem="O9D-NL-HMK" secondAttribute="leading" constant="24" id="aD7-iS-yhQ"/>
+                                    <constraint firstAttribute="bottom" secondItem="kwQ-qo-6KK" secondAttribute="bottom" constant="24" id="hIF-AW-6xJ"/>
+                                    <constraint firstItem="xu9-ms-Xcs" firstAttribute="leading" secondItem="O9D-NL-HMK" secondAttribute="leading" constant="24" id="rcY-bw-gvU"/>
+                                    <constraint firstAttribute="height" constant="200" id="xCI-VO-2BW"/>
+                                    <constraint firstAttribute="trailing" secondItem="kwQ-qo-6KK" secondAttribute="trailing" constant="24" id="y7v-Ck-8pj"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Yjd-3J-wt0" firstAttribute="top" secondItem="Erd-Zh-gWz" secondAttribute="bottom" constant="62" id="8rq-HY-GNE"/>
-                            <constraint firstItem="Erd-Zh-gWz" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Ox4-LC-qjI"/>
-                            <constraint firstItem="Yjd-3J-wt0" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="24" id="RMJ-eO-vYN"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Yjd-3J-wt0" secondAttribute="trailing" constant="24" id="YUL-g9-2xK"/>
-                            <constraint firstItem="Erd-Zh-gWz" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="gep-Ab-On0"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Yjd-3J-wt0" secondAttribute="bottom" constant="285" id="gzI-cj-MoS"/>
+                            <constraint firstItem="O9D-NL-HMK" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="0TM-Ns-QPN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="O9D-NL-HMK" secondAttribute="trailing" constant="24" id="ZyG-Lz-Oqw"/>
+                            <constraint firstItem="O9D-NL-HMK" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="k0a-60-DWv"/>
+                            <constraint firstItem="O9D-NL-HMK" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="24" id="n2m-GQ-iDl"/>
                         </constraints>
                     </view>
                 </viewController>

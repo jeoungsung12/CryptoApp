@@ -17,6 +17,7 @@ enum DoubleToStringType {
     case dToS
     case sToS
     case currentPrice
+    case percent
     case tradeVolume
 }
 
@@ -59,7 +60,7 @@ extension String {
                 return ""
             }
             
-            if num.isZero { return "0" }
+            if (num.isZero) && (type != .percent) { return "0" }
             switch type {
             case .dToS, .sToS:
                 return num == Double(Int(num)) ? Int(num).formatted() : String(format: "%.2f", num)
@@ -70,6 +71,9 @@ extension String {
                 }
                 let formatted = String(format: "%.2f", num)
                 return (formatted.last == "0") ? String(format: "%.1f", num) : formatted
+                
+            case .percent:
+                return String(format: "%.2f", num)
                 
             case .tradeVolume:
                 let decimal = Int(pow(10.0, 6.0))
