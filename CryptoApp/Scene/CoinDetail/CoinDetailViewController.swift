@@ -56,9 +56,8 @@ final class CoinDetailViewController: BaseViewController {
         output.errorResult
             .drive(with: self) { owner, error in
                 let vm = ErrorViewModel(notiType: .detail)
-                let vc = ErrorViewController(viewModel: vm)
+                let vc = ErrorViewController(viewModel: vm, errorType: error)
                 vm.delegate = owner
-                vc.configure(error)
                 vc.modalPresentationStyle = .overCurrentContext
                 owner.present(vc, animated: true)
                 owner.loadingIndicator.stopAnimating()

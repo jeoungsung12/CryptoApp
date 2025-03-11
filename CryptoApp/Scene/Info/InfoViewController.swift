@@ -86,9 +86,8 @@ final class InfoViewController: BaseViewController {
         output.errorResult
             .drive(with: self) { owner, error in
                 let vm = ErrorViewModel(notiType: .info)
-                let vc = ErrorViewController(viewModel: vm)
+                let vc = ErrorViewController(viewModel: vm, errorType: error)
                 vm.delegate = owner
-                vc.configure(error)
                 vc.modalPresentationStyle = .overCurrentContext
                 owner.present(vc, animated: true)
                 owner.loadingIndicator.stopAnimating()

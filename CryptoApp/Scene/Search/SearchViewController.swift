@@ -59,9 +59,8 @@ final class SearchViewController: BaseViewController {
                     owner.view.makeToast("검색 결과가 없습니다", duration: 1.5, position: .center)
                 } else {
                     let vm = ErrorViewModel(notiType: .search)
-                    let vc = ErrorViewController(viewModel: vm)
+                    let vc = ErrorViewController(viewModel: vm, errorType: error)
                     vm.delegate = owner
-                    vc.configure(error)
                     vc.modalPresentationStyle = .overCurrentContext
                     owner.present(vc, animated: true)
                 }

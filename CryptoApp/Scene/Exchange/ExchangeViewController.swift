@@ -62,10 +62,9 @@ final class ExchangeViewController: BaseViewController {
         output.errorResult
             .drive(with: self) { owner, error in
                 let vm = ErrorViewModel(notiType: .exchange)
-                let vc = ErrorViewController(viewModel: vm)
+                let vc = ErrorViewController(viewModel: vm, errorType: error)
                 vc.modalPresentationStyle = .overCurrentContext
                 vm.delegate = owner
-                vc.configure(error)
                 owner.present(vc, animated: true)
             }
             .disposed(by: disposeBag)

@@ -20,9 +20,10 @@ final class ErrorViewController: BaseViewController {
     
     private let viewModel: ErrorViewModel
     private var disposeBag = DisposeBag()
-    
-    init(viewModel: ErrorViewModel) {
+    private var errorType: Error
+    init(viewModel: ErrorViewModel, errorType: Error) {
         self.viewModel = viewModel
+        self.errorType = errorType
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -63,7 +64,13 @@ final class ErrorViewController: BaseViewController {
         descriptionLabel.textColor = .customDarkGray
         descriptionLabel.font = .systemFont(ofSize: 17, weight: .regular)
         descriptionLabel.numberOfLines = 0
-        descriptionLabel.text = "네트워크 연결이 일시적으로 원활하지 않습니다. 데이터 또는 Wi-Fi 연결 상태를 확인해주세요."
+        if let type = errorType as? UpbitError {
+            descriptionLabel.text = "\(type.errorDescription)"
+        } else if let type = errorType as? CoingeckoError {
+            descriptionLabel.text = "\(type.errorDescription)"
+        } else {
+            descriptionLabel.text = "네트워크 연결이 일시적으로 원활하지 않습니다. 데이터 또는 Wi-Fi 연결 상태를 확인해주세요."
+        }
         
         [titleLabel, descriptionLabel].forEach {
             $0.textAlignment = .center
@@ -95,8 +102,10 @@ final class ErrorViewController: BaseViewController {
         }
         
         descriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(24)
+            make.center.equalToSuperview()
             make.horizontalEdges.equalToSuperview().inset(24)
+            make.top.greaterThanOrEqualTo(titleLabel.snp.bottom).offset(12)
+            make.bottom.lessThanOrEqualTo(lineView.snp.top).inset(12)
         }
         
         reloadBtn.snp.makeConstraints { make in
@@ -111,14 +120,6 @@ final class ErrorViewController: BaseViewController {
             make.top.greaterThanOrEqualTo(descriptionLabel.snp.bottom).offset(12)
         }
         
-    }
- 
-    func configure(_ errorType: Error) {
-        if let type = errorType as? UpbitError {
-            descriptionLabel.text = type.errorDescription
-        } else if let type = errorType as? CoingeckoError {
-            descriptionLabel.text = type.errorDescription
-        }
     }
     
     deinit {

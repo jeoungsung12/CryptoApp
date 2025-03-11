@@ -43,7 +43,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let window = UIWindow(windowScene: windowScene)
             window.windowLevel = .normal
             
-            let errorViewController = ErrorViewController(viewModel: ErrorViewModel(notiType: .network))
+            let errorViewController = ErrorViewController(viewModel: ErrorViewModel(notiType: .network), errorType: NSError())
             window.rootViewController = errorViewController
             window.makeKeyAndVisible()
             
