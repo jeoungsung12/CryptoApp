@@ -26,7 +26,7 @@ final class CustomSearchBar: BaseView {
     
     override func configureView() {
         searchButton.tintColor = .customGray
-        searchButton.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        searchButton.setImage(.searchIcon, for: .normal)
         
         searchTextField.placeholder = "검색어를 입력해주세요"
         searchTextField.textColor = .customDarkGray

@@ -117,6 +117,7 @@ final class SearchViewController: BaseViewController {
                 } else {
                     owner.input.searchTrigger.accept(text)
                     owner.loadingIndicator.startAnimating()
+                    owner.view.endEditing(true)
                     owner.disableTouchScreen()
                 }
             }

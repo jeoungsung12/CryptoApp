@@ -25,6 +25,10 @@ extension UIImage {
         return .init(systemName: "arrow.left")
     }()
     
+    static var searchIcon: UIImage? = {
+        return .init(systemName: "magnifyingglass")
+    }()
+    
     static var starFill: UIImage? = {
         return .init(systemName: "star.fill")
     }()
