@@ -17,7 +17,7 @@ protocol GeckoRepositoryType {
 
 final class GeckoRepository: GeckoRepositoryType {
     
-    func getCoinDetail(id: String) -> RxSwift.Observable<[GeckoDetailResponseDTO]> {
+    func getCoinDetail(id: String) -> Observable<[GeckoDetailResponseDTO]> {
         return NetworkManager.shared.getData(CoingeckoRouter.getCoinDetail(id: id))
     }
     
